@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">speedtester</string>
+
+    <string-array name="building_name">
+        <item>tower A</item>
+        <item>tower B</item>
+    </string-array>
+
+    <string-array name="building_levels">
+        <item name="towerA">5</item>
+        <item name="towerB">3</item>
+    </string-array>
+
+    <string-array name="building_warning">
+        <item name="towerA">1</item>
+        <item name="towerB">0</item>
+    </string-array>
+
+    <string-array name="building_num_ssid">
+        <item name="towerA">10</item>
+        <item name="towerB">10</item>
+    </string-array>
+
+    <string-array name="tower_a_levels">
+        <item>level 1</item>
+        <item>level 2</item>
+        <item>level 3</item>
+        <item>level 4</item>
+        <item>level 5</item>
+    </string-array>
+
+    <string-array name="tower_a_numAP">
+        <item>3</item>
+        <item>2</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="tower_a_warning">
+        <item>1</item>
+        <item>2</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="mock1">
+        <item name="ssid">wifi1</item>
+        <item name="site">tower A</item>
+        <item name="location">liftlobby</item>
+        <item name="wifiController">123.123.123</item>
+        <item name="model">Rasberry pi 4</item>
+        <item name="runtime">1234</item>
+        <item name="mac">1234.123</item>
+        <item name="IP">123.123.123</item>
+        <item name="desc">123.123.123</item>
+        <item name="lat">123.123.123</item>
+        <item name="lon">123.123.123</item>
+    </string-array>
+
+    <string-array name="mock2">
+        <item name="ssid">wifi2</item>
+        <item name="site">tower A</item>
+        <item name="location">liftlobby</item>
+        <item name="wifiController">123.123.123</item>
+        <item name="model">Rasberry pi 4</item>
+        <item name="runtime">1234</item>
+        <item name="mac">1234.123</item>
+        <item name="IP">123.123.123</item>
+        <item name="desc">123.123.123</item>
+        <item name="lat">123.123.123</item>
+        <item name="lon">123.123.123</item>
+    </string-array>
+
+    <string-array name="mock3">
+        <item name="ssid">wifi3</item>
+        <item name="site">tower A</item>
+        <item name="location">liftlobby</item>
+        <item name="wifiController">123.123.123</item>
+        <item name="model">Rasberry pi 4</item>
+        <item name="runtime">1234</item>
+        <item name="mac">1234.123</item>
+        <item name="IP">123.123.123</item>
+        <item name="desc">123.123.123</item>
+        <item name="lat">123.123.123</item>
+        <item name="lon">123.123.123</item>
+    </string-array>
+</resources>
