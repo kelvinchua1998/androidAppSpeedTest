@@ -44,7 +44,6 @@
         <item>0</item>
         <item>0</item>
     </string-array>
-
     <string-array name="mock1">
         <item name="ssid">wifi1</item>
         <item name="site">tower A</item>
@@ -86,4 +85,11 @@
         <item name="lat">123.123.123</item>
         <item name="lon">123.123.123</item>
     </string-array>
+
+    <string-array name="mock_data">
+        <item>@array/mock1</item>
+        <item>@array/mock2</item>
+        <item>@array/mock3</item>
+    </string-array>
+
 </resources>

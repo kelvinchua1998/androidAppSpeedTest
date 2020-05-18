@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ssidLayout"
+    android:layout_width="match_parent"
+    android:layout_height="250px">
+
+
+    <TextView
+        android:id="@+id/ssidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="31dp"
+        android:text="SSID"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/locationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="location"
+        app:layout_constraintStart_toStartOf="@+id/ssidTextView"
+        app:layout_constraintTop_toBottomOf="@+id/ssidTextView" />
+
+    <TextView
+        android:id="@+id/ipTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="40dp"
+        android:text="ip"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/ssidTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

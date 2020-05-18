@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent showDetailActivity = new Intent(getApplicationContext(), towerALevelsActivity.class);
+                showDetailActivity.putExtra("com.example.speedtester.buildingIndex", position);//pass the postion to next screen
                 startActivity(showDetailActivity);
             }
         });

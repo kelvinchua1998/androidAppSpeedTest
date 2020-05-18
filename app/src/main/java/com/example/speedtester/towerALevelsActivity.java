@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 public class towerALevelsActivity extends AppCompatActivity {
@@ -19,14 +21,27 @@ public class towerALevelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tower_a_levels);
 
-        Resources res = getResources();
-        towerAListView = (ListView)findViewById(R.id.towerAListView);
-        towerALevels = res.getStringArray(R.array.tower_a_levels);
-        towerAnumAP = res.getStringArray(R.array.tower_a_numAP);
-        towerAwarning = res.getStringArray(R.array.tower_a_warning);
+        Intent in = getIntent();
+        int index = in.getIntExtra("com.example.speedtester.buildingIndex", -1);
 
-        TowerAlevelAdapter towerAlevelAdapter = new TowerAlevelAdapter(this,towerALevels,towerAnumAP,towerAwarning);
-        towerAListView.setAdapter(towerAlevelAdapter);
+        if(index == 0) {
+            Resources res = getResources();
+            towerAListView = (ListView) findViewById(R.id.towerAListView);
+            towerALevels = res.getStringArray(R.array.tower_a_levels);
+            towerAnumAP = res.getStringArray(R.array.tower_a_numAP);
+            towerAwarning = res.getStringArray(R.array.tower_a_warning);
 
+            TowerAlevelAdapter towerAlevelAdapter = new TowerAlevelAdapter(this, towerALevels, towerAnumAP, towerAwarning);
+            towerAListView.setAdapter(towerAlevelAdapter);
+
+            towerAListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+                    showSsidActivity.putExtra("com.example.speedtester.level", position);//pass the postion to next screen
+                    startActivity(showSsidActivity);
+                }
+            });
+        }
     }
 }
