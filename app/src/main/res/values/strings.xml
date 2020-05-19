@@ -6,44 +6,32 @@
         <item>tower B</item>
     </string-array>
 
-    <string-array name="building_levels">
-        <item name="towerA">5</item>
-        <item name="towerB">3</item>
-    </string-array>
-
-    <string-array name="building_warning">
-        <item name="towerA">1</item>
-        <item name="towerB">0</item>
-    </string-array>
-
-    <string-array name="building_num_ssid">
-        <item name="towerA">10</item>
-        <item name="towerB">10</item>
-    </string-array>
-
     <string-array name="tower_a_levels">
         <item>level 1</item>
         <item>level 2</item>
         <item>level 3</item>
         <item>level 4</item>
         <item>level 5</item>
+        <item>level 6</item>
+        <item>level 7</item>
+        <item>level 8</item>
+        <item>level 9</item>
+        <item>level 10</item>
     </string-array>
 
-    <string-array name="tower_a_numAP">
-        <item>3</item>
-        <item>2</item>
-        <item>3</item>
-        <item>2</item>
-        <item>1</item>
+    <string-array name="tower_b_levels">
+        <item>level 1</item>
+        <item>level 2</item>
+        <item>level 3</item>
+        <item>level 4</item>
+        <item>level 5</item>
+        <item>level 6</item>
+        <item>level 7</item>
+        <item>level 8</item>
+        <item>level 9</item>
+        <item>level 10</item>
     </string-array>
 
-    <string-array name="tower_a_warning">
-        <item>1</item>
-        <item>2</item>
-        <item>0</item>
-        <item>0</item>
-        <item>0</item>
-    </string-array>
     <string-array name="mock1">
         <item name="ssid">wifi1</item>
         <item name="site">tower A</item>

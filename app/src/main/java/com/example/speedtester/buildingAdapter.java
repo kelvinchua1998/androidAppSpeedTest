@@ -1,24 +1,30 @@
 package com.example.speedtester;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class buildingAdapter extends BaseAdapter {
     LayoutInflater mInflater;
     String[] buildingName;
-    String[] buildingLevel;
-    String[] buildingNumSsid;
-    String[] buildingWarning;
+    int[] buildingLevel;
+    int[] buildingAP;
 
-    public buildingAdapter(Context c,String[] n,String[] l, String[] s, String[] w){
+    //to do: warning and critical
+
+    public buildingAdapter(Context c, String[] n, int[] l, int[] a){
         buildingName = n;
         buildingLevel = l;
-        buildingNumSsid = s;
-        buildingWarning = w;
+        buildingAP = a;
+
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
@@ -38,23 +44,36 @@ public class buildingAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = mInflater.inflate(R.layout.building_listview_detail, null);
+
+        View v = mInflater.inflate(R.layout.building_listview_detail, parent,false);
 
         TextView towerNameTextView = (TextView) v.findViewById(R.id.towerNameTextView);
-        TextView numberLevelsTextView = (TextView) v.findViewById(R.id.numberLevelsTextView);
-        TextView numberSsidTextView = (TextView) v.findViewById(R.id.numberSsidTextView);
-        TextView warningNumberTextView = (TextView) v.findViewById(R.id.warningNumberTextView);
-
+        TextView numberLevelsTextView = (TextView) v.findViewById(R.id.totalLevelsTextView);
+        TextView numberSsidTextView = (TextView) v.findViewById(R.id.totalAPTextView);
+        TextView warningNumberTextView = (TextView) v.findViewById(R.id.warningNumTextView);
+        TextView criticalNumberTextView = (TextView) v.findViewById(R.id.criticalNumTextView);
 
         String Name = buildingName[position];
-        String Level = buildingLevel[position];
-        String NumSsid = buildingNumSsid[position];
-        String Warning = buildingWarning[position];
+        int Level = buildingLevel[position];
+        int NumAp;
+        if(buildingAP != null){
+            NumAp = buildingAP[position];}
+        else{
+            NumAp=0;
+        }
+
+
+        Log.d("adapter", "view");
+        Log.d("adapter", String.valueOf(buildingAP));
+
+
 
         towerNameTextView.setText(Name);
-        numberLevelsTextView.setText("number of levels: "+Level);
-        numberSsidTextView.setText("number of AP: "+NumSsid);
-        warningNumberTextView.setText("WARNING: "+Warning);
+        numberLevelsTextView.setText("levels: "+Level);
+        if(buildingAP != null)
+        numberSsidTextView.setText("AP: "+NumAp);
+        else
+        numberSsidTextView.setText("AP: loading");
         return v;
     }
 }

@@ -24,24 +24,23 @@ public class towerALevelsActivity extends AppCompatActivity {
         Intent in = getIntent();
         int index = in.getIntExtra("com.example.speedtester.buildingIndex", -1);
 
-        if(index == 0) {
-            Resources res = getResources();
-            towerAListView = (ListView) findViewById(R.id.towerAListView);
-            towerALevels = res.getStringArray(R.array.tower_a_levels);
-            towerAnumAP = res.getStringArray(R.array.tower_a_numAP);
-            towerAwarning = res.getStringArray(R.array.tower_a_warning);
+        Resources res = getResources();
+        towerAListView = (ListView) findViewById(R.id.towerAListView);
+        towerALevels = res.getStringArray(R.array.tower_a_levels);
+//            towerAnumAP = res.getStringArray(R.array.tower_a_numAP);
+//            towerAwarning = res.getStringArray(R.array.tower_a_warning);
 
-            TowerAlevelAdapter towerAlevelAdapter = new TowerAlevelAdapter(this, towerALevels, towerAnumAP, towerAwarning);
-            towerAListView.setAdapter(towerAlevelAdapter);
+        TowerAlevelAdapter towerAlevelAdapter = new TowerAlevelAdapter(this, towerALevels, towerAnumAP, towerAwarning);
+        towerAListView.setAdapter(towerAlevelAdapter);
 
-            towerAListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
-                    showSsidActivity.putExtra("com.example.speedtester.level", position);//pass the postion to next screen
-                    startActivity(showSsidActivity);
-                }
-            });
-        }
+        towerAListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+                showSsidActivity.putExtra("com.example.speedtester.level", position);//pass the postion to next screen
+                startActivity(showSsidActivity);
+            }
+        });
+
     }
 }
