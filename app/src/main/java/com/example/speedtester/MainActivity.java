@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.List;
 
 import okhttp3.Call;
@@ -124,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    buildingnumAP = new int[]{AnumAP,BnumAP};
                     Log.d("data","AnumAP: "+ AnumAP+" BnumAP: "+BnumAP);
 
                     runOnUiThread(new Runnable() {
