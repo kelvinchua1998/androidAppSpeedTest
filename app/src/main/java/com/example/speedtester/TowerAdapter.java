@@ -7,27 +7,28 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class TowerAlevelAdapter extends BaseAdapter {
+public class TowerAdapter extends BaseAdapter {
 
     LayoutInflater mInflater;
-    String[] towerALevels;
-    String[] towerAnumAP;
-    String[] towerAwarning;
-    public TowerAlevelAdapter(Context c, String[] l,String[] a,String[] w){
-        towerALevels = l;
-        towerAnumAP = a;
-        towerAwarning = w;
+    String[] towerLevels;
+    int[] towernumAP;
+//    String[] towerwarning;
+
+    public TowerAdapter(Context c, String[] l, int[] a){
+        towerLevels = l;
+        towernumAP = a;
+
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return towerALevels.length;
+        return towerLevels.length;
     }
 
     @Override
     public Object getItem(int position) {
-        return towerALevels[position];
+        return towerLevels[position];
     }
 
     @Override
@@ -40,17 +41,18 @@ public class TowerAlevelAdapter extends BaseAdapter {
 
         View v = mInflater.inflate(R.layout.tower_a_levels_detail,null);
 
-        TextView towerAlevelListView = (TextView) v.findViewById(R.id.towerAlevelListView);
+        TextView towerLevelname = (TextView) v.findViewById(R.id.towerLevelName);
         TextView numAPTextView = (TextView) v.findViewById(R.id.numAPTextView);
         TextView warningTextView = (TextView) v.findViewById(R.id.warningTextView);
 
-        String level = towerALevels[position];
-        String AP = towerAnumAP[position];
-        String warning = towerAwarning[position];
+        String level = towerLevels[position];
 
-        towerAlevelListView.setText(level);
-        numAPTextView.setText("number of AP: "+AP);
-        warningTextView.setText("Warning: "+ warning);
+        int AP = towernumAP[position];
+//        String warning = towerAwarning[position];
+
+        towerLevelname.setText(level);
+        numAPTextView.setText("AP: "+AP);
+//        warningTextView.setText("Warning: "+ warning);
 
         return v;
     }

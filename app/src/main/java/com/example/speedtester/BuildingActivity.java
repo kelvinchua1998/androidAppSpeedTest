@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,8 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,7 +25,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class BuildingActivity extends AppCompatActivity {
     ListView BuildingListView;
     String[] buildingName;//towera
     int buildingLevelA ,buildingLevelB;
@@ -36,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
     JSONArray APlist ;
     buildingAdapter BuildingAdapter;
     int i,AnumAP =0 , BnumAP=0;
-
+    String[] config;
     int[] buildingnumAP ;
     int[] buildingLevel;//total number of levels
 
 //    Todo
-//
+//making the building names and levels dynamic, TBC
 //     1) warning number
 //
 //    2) critical number
@@ -58,10 +55,10 @@ public class MainActivity extends AppCompatActivity {
         Resources res = getResources();
         BuildingListView = (ListView) findViewById(R.id.buldingListView);
         buildingName = res.getStringArray(R.array.building_name);
-
+        config = res.getStringArray(R.array.config);
         //putting the total num of levels into an array
-        buildingLevelA = (res.getStringArray(R.array.tower_a_levels)).length;
-        buildingLevelB = (res.getStringArray(R.array.tower_b_levels)).length;
+        buildingLevelA = (res.getStringArray(R.array.Main_Block)).length;
+        buildingLevelB = (res.getStringArray(R.array.Podium_Block)).length;
         buildingLevel = new int[]{buildingLevelA, buildingLevelB};
 
         BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP);
@@ -71,9 +68,14 @@ public class MainActivity extends AppCompatActivity {
         BuildingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent showDetailActivity = new Intent(getApplicationContext(), towerALevelsActivity.class);
-                showDetailActivity.putExtra("com.example.speedtester.buildingIndex", position);//pass the postion to next screen
-                startActivity(showDetailActivity);
+                Intent showTowerActivity = new Intent(getApplicationContext(), TowerActivity.class);
+                Bundle extras = new Bundle();
+
+                extras.putInt("com.example.speedtester.buildingIndex",position);
+                extras.putString("com.example.speedtester.data", String.valueOf(APlist));
+
+                showTowerActivity.putExtras(extras);
+                startActivity(showTowerActivity);
             }
         });
 
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
         Request request = new Request.Builder()
-                .url("http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist")
+                .url("http://192.168.1.124:8081/api/speedtest/getaplist")
                 .method("POST", body)
                 .build();
 
@@ -134,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
                             buildingnumAP = new int[]{AnumAP, BnumAP};
                             Log.d("data","received" );
-//                            BuildingListView.setAdapter(BuildingAdapter);
                             BuildingAdapter.setbuildingAP(buildingnumAP);
 
                         }

@@ -2,11 +2,12 @@
     <string name="app_name">speedtester</string>
 
     <string-array name="building_name">
-        <item>tower A</item>
-        <item>tower B</item>
+        <item>Main Block</item>
+        <item>Podium Block</item>
     </string-array>
 
-    <string-array name="tower_a_levels">
+    <string-array name="Main_Block">
+        <item>basement 1</item>
         <item>level 1</item>
         <item>level 2</item>
         <item>level 3</item>
@@ -19,7 +20,8 @@
         <item>level 10</item>
     </string-array>
 
-    <string-array name="tower_b_levels">
+    <string-array name="Podium_Block">
+        <item>basement 1</item>
         <item>level 1</item>
         <item>level 2</item>
         <item>level 3</item>
@@ -80,4 +82,9 @@
         <item>@array/mock3</item>
     </string-array>
 
+    <string-array name="config">
+        <item name = "url">http://localhost:8081/api/speedtest/getaplist</item>
+        <item name = "token">token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade</item>
+        <item name = "mediaType">application/x-www-form-urlencoded</item>
+    </string-array>
 </resources>
