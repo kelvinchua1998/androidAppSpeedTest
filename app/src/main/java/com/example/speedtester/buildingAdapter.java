@@ -70,10 +70,17 @@ public class buildingAdapter extends BaseAdapter {
 
         towerNameTextView.setText(Name);
         numberLevelsTextView.setText("levels: "+Level);
+
         if(buildingAP != null)
         numberSsidTextView.setText("AP: "+NumAp);
         else
         numberSsidTextView.setText("AP: loading");
+
         return v;
+    }
+
+    public void setbuildingAP(int[] a) {
+        buildingAP = a;
+        notifyDataSetChanged();
     }
 }

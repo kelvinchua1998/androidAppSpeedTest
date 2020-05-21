@@ -115,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 singleAP = APlist.getJSONObject(i);
                                 JSONObject location = singleAP.getJSONObject("location");
-                                if(location.get("building").toString().equals("Tower A") )
+                                if(location.get("building").toString().equals("Main Block") )
                                     AnumAP++;
-                                else if (location.get("building").toString().equals("Tower B"))
+                                else if (location.get("building").toString().equals("Podium Block"))
                                     BnumAP++;
                         }
 
@@ -132,10 +132,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
 
 
-                            buildingnumAP = new int[]{AnumAP,BnumAP};
+                            buildingnumAP = new int[]{AnumAP, BnumAP};
                             Log.d("data","received" );
-                            BuildingListView.setAdapter(BuildingAdapter);
-                            BuildingAdapter.notifyDataSetChanged();
+//                            BuildingListView.setAdapter(BuildingAdapter);
+                            BuildingAdapter.setbuildingAP(buildingnumAP);
 
                         }
                     });
