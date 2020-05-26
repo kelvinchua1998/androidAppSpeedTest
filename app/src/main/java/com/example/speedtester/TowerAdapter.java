@@ -12,11 +12,14 @@ public class TowerAdapter extends BaseAdapter {
     LayoutInflater mInflater;
     String[] towerLevels;
     int[] towernumAP;
-//    String[] towerwarning;
+    int[] towerWarning;
+    int[] towerCritical;
 
-    public TowerAdapter(Context c, String[] l, int[] a){
-        towerLevels = l;
-        towernumAP = a;
+    public TowerAdapter(Context c, String[] levelString, int[] APIntArray, int[] warningIntArray, int[] criticalIntArray){
+        towerLevels = levelString;
+        towernumAP = APIntArray;
+        towerWarning = warningIntArray;
+        towerCritical  = criticalIntArray;
 
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -44,15 +47,19 @@ public class TowerAdapter extends BaseAdapter {
         TextView towerLevelname = (TextView) v.findViewById(R.id.towerLevelName);
         TextView numAPTextView = (TextView) v.findViewById(R.id.numAPTextView);
         TextView warningTextView = (TextView) v.findViewById(R.id.warningTextView);
+        TextView criticalTextView = (TextView) v.findViewById(R.id.criticalTextView);
 
         String level = towerLevels[position];
 
         int AP = towernumAP[position];
-//        String warning = towerAwarning[position];
+        int warning = towerWarning[position];
+        int critical = towerCritical[position];
 
         towerLevelname.setText(level);
-        numAPTextView.setText("AP: "+AP);
-//        warningTextView.setText("Warning: "+ warning);
+
+        numAPTextView.setText("AP: " + AP);
+        warningTextView.setText("Warning: " + warning);
+        criticalTextView.setText("critical: " + critical);
 
         return v;
     }

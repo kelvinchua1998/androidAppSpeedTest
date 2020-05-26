@@ -14,15 +14,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class TowerActivity extends AppCompatActivity {
 
     ListView towerListView;
     String[] towerNames;
     String[] towerLevels;
-    int[] towerNumAP = new int[] {0,0,0,0,0,0,0,0,0,0,0};
-    String[] towerWarning;
 
+    APData data;
     JSONArray APlist;
+    String APListStrData;
+    int buildingIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +34,19 @@ public class TowerActivity extends AppCompatActivity {
 
         Intent in = getIntent();
         Bundle extras = in.getExtras();
-        int buildingIndex = extras.getInt("com.example.speedtester.buildingIndex", -1);
-        String Data = extras.getString("com.example.speedtester.data");
+        buildingIndex = extras.getInt("com.example.speedtester.buildingIndex", -1);
+        APListStrData = extras.getString("com.example.speedtester.data");
         try {
-            APlist = new JSONArray(Data);
+            APlist = new JSONArray(APListStrData);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
         Resources res = getResources();
         towerListView = (ListView) findViewById(R.id.towerListView);
         towerNames = res.getStringArray(R.array.building_name);
+
+        getSupportActionBar().setTitle(towerNames[buildingIndex]);
 
         if (buildingIndex == 0)
             towerLevels = res.getStringArray(R.array.Main_Block);
@@ -50,29 +54,43 @@ public class TowerActivity extends AppCompatActivity {
             towerLevels = res.getStringArray(R.array.Podium_Block);
 
         try {
-            towerNumAP = getNumAp(buildingIndex,APlist,towerNames);
-            Log.d("data", "towerNumAP: "+towerNumAP.toString());
+            data= getNumAp(buildingIndex,APlist,towerNames);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        TowerAdapter towerlevelAdapter = new TowerAdapter(this, towerLevels, towerNumAP);
+        TowerAdapter towerlevelAdapter = new TowerAdapter(this, towerLevels, data.numAPEachLevel, data.warningEachLevel,data.criticalEachLevel);
         towerListView.setAdapter(towerlevelAdapter);
 
         towerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
-                    showSsidActivity.putExtra("com.example.speedtester.level", position);//pass the postion to next screen
+
+                    Bundle extras = new Bundle();
+
+                    extras.putString("com.example.speedtester.data", APListStrData);
+                    extras.putInt("com.example.speedtester.level", position); //pass the postion to next screen
+                    extras.putIntegerArrayList("com.example.speedtester.APIndexEachLevel",data.indexAPEachLevel[position]);
+                    extras.putInt("com.example.speedtester.buildingIndex", buildingIndex);
+
+                    showSsidActivity.putExtras(extras);
                     startActivity(showSsidActivity);
                 }
         });
     }
 
-    private int[] getNumAp(int buildingIndex, JSONArray APlist, String[] buildingName) throws JSONException {
+    private APData getNumAp(int buildingIndex, JSONArray APlist, String[] buildingName) throws JSONException {
         int i,level;
-
+        ArrayList<Integer>[] indexAPEachLevel = new ArrayList[11];// An arrayList containing array list
         int[] numAPEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+        int[] warningEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+        int[] criticalEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+
+        //initializing the array with ArrayList
+        for (i = 0; i < indexAPEachLevel.length; i++) {
+            indexAPEachLevel[i] = new ArrayList<>();
+        }
 
         for (i=0 ; i<APlist.length();i++) {
 
@@ -82,27 +100,62 @@ public class TowerActivity extends AppCompatActivity {
                 if (location.get("building").toString().equals(buildingName[0])){
                     Log.d("data", "level:"+ location.getInt("level") + "ssid: "+ singleAP.getString("ssid"));
                     level = location.getInt("level");
-                    if(level ==-1)
+                    if(level ==-1){
                         numAPEachLevel[0] += 1;
-                    else
+                        indexAPEachLevel[0].add(i);
+                        if(singleAP.getInt("status")==1) warningEachLevel[0]++;
+                        else if (singleAP.getInt("status")==2) criticalEachLevel[0]++;
+                    }
+
+                    else{
                         numAPEachLevel[level] += 1;
+                        indexAPEachLevel[level].add(i);
+                        if(singleAP.getInt("status")==1) warningEachLevel[level]++;
+                        else if (singleAP.getInt("status")==2) criticalEachLevel[level]++;
+                    }
+
                 }
 
             }
             else if (buildingIndex==1){
                 if (location.get("building").toString().equals(buildingName[1])){
                     level = location.getInt("level");
-                    if(level ==-1)
+                    if(level ==-1){
                         numAPEachLevel[0] += 1;
-                    else
+                        indexAPEachLevel[0].add(i);
+                        if(singleAP.getInt("status")==1) warningEachLevel[0]++;
+                        else if (singleAP.getInt("status")==2) criticalEachLevel[0]++;
+                    }
+
+                    else{
                         numAPEachLevel[level] += 1;
+                        indexAPEachLevel[level].add(i);
+                        if(singleAP.getInt("status")==1) warningEachLevel[level]++;
+                        else if (singleAP.getInt("status")==2) criticalEachLevel[level]++;
+                    }
+
                 }
             }
         }
+
         Log.d("data", "getNumAp: calculated ");
-        return numAPEachLevel;
+
+        //return a class that contain all the data
+        APData data = new APData();
+
+        data.numAPEachLevel = numAPEachLevel;
+        data.indexAPEachLevel = indexAPEachLevel;
+        data.warningEachLevel = warningEachLevel;
+        data.criticalEachLevel = criticalEachLevel;
+
+        return data;
 
     }
 
-
+    public class APData{
+        ArrayList<Integer>[] indexAPEachLevel;
+        int[] numAPEachLevel;
+        int[] warningEachLevel;
+        int[] criticalEachLevel;
+    }
 }

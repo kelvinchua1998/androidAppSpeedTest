@@ -4,36 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ssidLayout"
     android:layout_width="match_parent"
-    android:layout_height="250px">
+    android:layout_height="150dp">
 
+
+    <TextView
+        android:id="@+id/pingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="ping"
+        app:layout_constraintStart_toEndOf="@+id/downloadTextView"
+        app:layout_constraintTop_toTopOf="@+id/downloadTextView" />
 
     <TextView
         android:id="@+id/ssidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="32dp"
         android:text="SSID"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/locationTextView"
+        android:id="@+id/speedtestHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="location"
+        android:layout_marginTop="10dp"
+        android:text="Speedtest"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/ssidTextView"
         app:layout_constraintTop_toBottomOf="@+id/ssidTextView" />
 
     <TextView
-        android:id="@+id/ipTextView"
+        android:id="@+id/uploadTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="40dp"
-        android:text="ip"
-        android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/ssidTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="10dp"
+        android:text="upload"
+        app:layout_constraintStart_toStartOf="@+id/speedtestHeader"
+        app:layout_constraintTop_toBottomOf="@+id/speedtestHeader" />
+
+    <TextView
+        android:id="@+id/downloadTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="download"
+        app:layout_constraintStart_toEndOf="@+id/uploadTextView"
+        app:layout_constraintTop_toTopOf="@+id/uploadTextView" />
+
+    <ImageView
+        android:id="@+id/indicatorImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/ssidTextView"
+        app:layout_constraintTop_toTopOf="@+id/ssidTextView"
+        app:srcCompat="@drawable/green_indicator" />
 </androidx.constraintlayout.widget.ConstraintLayout>

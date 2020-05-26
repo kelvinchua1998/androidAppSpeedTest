@@ -34,54 +34,6 @@
         <item>level 10</item>
     </string-array>
 
-    <string-array name="mock1">
-        <item name="ssid">wifi1</item>
-        <item name="site">tower A</item>
-        <item name="location">liftlobby</item>
-        <item name="wifiController">123.123.123</item>
-        <item name="model">Rasberry pi 4</item>
-        <item name="runtime">1234</item>
-        <item name="mac">1234.123</item>
-        <item name="IP">123.123.123</item>
-        <item name="desc">123.123.123</item>
-        <item name="lat">123.123.123</item>
-        <item name="lon">123.123.123</item>
-    </string-array>
-
-    <string-array name="mock2">
-        <item name="ssid">wifi2</item>
-        <item name="site">tower A</item>
-        <item name="location">liftlobby</item>
-        <item name="wifiController">123.123.123</item>
-        <item name="model">Rasberry pi 4</item>
-        <item name="runtime">1234</item>
-        <item name="mac">1234.123</item>
-        <item name="IP">123.123.123</item>
-        <item name="desc">123.123.123</item>
-        <item name="lat">123.123.123</item>
-        <item name="lon">123.123.123</item>
-    </string-array>
-
-    <string-array name="mock3">
-        <item name="ssid">wifi3</item>
-        <item name="site">tower A</item>
-        <item name="location">liftlobby</item>
-        <item name="wifiController">123.123.123</item>
-        <item name="model">Rasberry pi 4</item>
-        <item name="runtime">1234</item>
-        <item name="mac">1234.123</item>
-        <item name="IP">123.123.123</item>
-        <item name="desc">123.123.123</item>
-        <item name="lat">123.123.123</item>
-        <item name="lon">123.123.123</item>
-    </string-array>
-
-    <string-array name="mock_data">
-        <item>@array/mock1</item>
-        <item>@array/mock2</item>
-        <item>@array/mock3</item>
-    </string-array>
-
     <string-array name="config">
         <item name = "url">http://localhost:8081/api/speedtest/getaplist</item>
         <item name = "token">token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade</item>

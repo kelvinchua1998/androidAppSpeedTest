@@ -17,13 +17,18 @@ public class buildingAdapter extends BaseAdapter {
     String[] buildingName;
     int[] buildingLevel;
     int[] buildingAP;
+    int[] BuildingWarning;
+    int[] BuildingCritical;
 
     //to do: warning and critical
 
-    public buildingAdapter(Context c, String[] n, int[] l, int[] a){
-        buildingName = n;
-        buildingLevel = l;
-        buildingAP = a;
+    public buildingAdapter(Context c, String[] name, int[] level, int[] AP, int[] warning, int[] critical){
+        buildingName = name;
+        buildingLevel = level;
+        buildingAP = AP;
+        BuildingWarning = warning;
+        BuildingCritical = critical;
+
 
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -56,17 +61,15 @@ public class buildingAdapter extends BaseAdapter {
         String Name = buildingName[position];
         int Level = buildingLevel[position];
         int NumAp;
+
         if(buildingAP != null){
             NumAp = buildingAP[position];}
         else{
             NumAp=0;
         }
 
-
-        Log.d("adapter", "view");
-        Log.d("adapter", String.valueOf(buildingAP));
-
-
+        int warningNum = BuildingWarning[position];
+        int criticalNum = BuildingCritical[position];
 
         towerNameTextView.setText(Name);
         numberLevelsTextView.setText("levels: "+Level);
@@ -76,11 +79,17 @@ public class buildingAdapter extends BaseAdapter {
         else
         numberSsidTextView.setText("AP: loading");
 
+        warningNumberTextView.setText("warning: "+warningNum);
+        criticalNumberTextView.setText("crtical: "+criticalNum);
+
         return v;
     }
 
-    public void setbuildingAP(int[] a) {
-        buildingAP = a;
+    public void setbuildingAP(int[] AP, int[] warning, int[]critical) {
+        buildingAP = AP;
+        BuildingWarning = warning;
+        BuildingCritical = critical;
+
         notifyDataSetChanged();
     }
 }

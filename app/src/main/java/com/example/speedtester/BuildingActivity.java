@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,6 +34,7 @@ public class BuildingActivity extends AppCompatActivity {
     JSONArray APlist ;
     buildingAdapter BuildingAdapter;
     int i,AnumAP =0 , BnumAP=0;
+    int[] warningList = {0,0}, criticalList = {0,0};
     String[] config;
     int[] buildingnumAP ;
     int[] buildingLevel;//total number of levels
@@ -50,6 +52,8 @@ public class BuildingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setTitle("Le Grove");
+
         connectAPI();// connect api function
 
         Resources res = getResources();
@@ -61,7 +65,7 @@ public class BuildingActivity extends AppCompatActivity {
         buildingLevelB = (res.getStringArray(R.array.Podium_Block)).length;
         buildingLevel = new int[]{buildingLevelA, buildingLevelB};
 
-        BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP);
+        BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP,warningList,criticalList);
         BuildingListView.setAdapter(BuildingAdapter);
 
 
@@ -118,9 +122,22 @@ public class BuildingActivity extends AppCompatActivity {
                                 singleAP = APlist.getJSONObject(i);
                                 JSONObject location = singleAP.getJSONObject("location");
                                 if(location.get("building").toString().equals("Main Block") )
+                                {
                                     AnumAP++;
+                                    if (singleAP.getInt("status")==1)
+                                        warningList[0]++;
+                                    else if (singleAP.getInt("status")==2)
+                                        criticalList[0]++;
+                                }
+
                                 else if (location.get("building").toString().equals("Podium Block"))
+                                {
                                     BnumAP++;
+                                    if (singleAP.getInt("status")==1)
+                                        warningList[1]++;
+                                    else if (singleAP.getInt("status")==2)
+                                        criticalList[1]++;
+                                }
                         }
 
                     } catch (JSONException e) {
@@ -135,8 +152,9 @@ public class BuildingActivity extends AppCompatActivity {
 
 
                             buildingnumAP = new int[]{AnumAP, BnumAP};
+
                             Log.d("data","received" );
-                            BuildingAdapter.setbuildingAP(buildingnumAP);
+                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList);
 
                         }
                     });
@@ -146,4 +164,6 @@ public class BuildingActivity extends AppCompatActivity {
 
         });
     }
+
+
 }
