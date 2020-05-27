@@ -35,6 +35,7 @@ public class BuildingActivity extends AppCompatActivity {
     buildingAdapter BuildingAdapter;
     int i,AnumAP =0 , BnumAP=0;
     int[] warningList = {0,0}, criticalList = {0,0};
+    int[] downloadList = {0,0}, uploadList = {0,0};
     String[] config;
     int[] buildingnumAP ;
     int[] buildingLevel;//total number of levels
@@ -65,7 +66,7 @@ public class BuildingActivity extends AppCompatActivity {
         buildingLevelB = (res.getStringArray(R.array.Podium_Block)).length;
         buildingLevel = new int[]{buildingLevelA, buildingLevelB};
 
-        BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP,warningList,criticalList);
+        BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP,warningList,criticalList,downloadList,uploadList);
         BuildingListView.setAdapter(BuildingAdapter);
 
 
@@ -88,11 +89,16 @@ public class BuildingActivity extends AppCompatActivity {
 
     }
     private void connectAPI(){
+        boolean isTest = true;
+        String url ;
+        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
+        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
+
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
         Request request = new Request.Builder()
-                .url("http://192.168.1.124:8081/api/speedtest/getaplist")
+                .url(url)
                 .method("POST", body)
                 .build();
 
@@ -123,7 +129,13 @@ public class BuildingActivity extends AppCompatActivity {
                                 JSONObject location = singleAP.getJSONObject("location");
                                 if(location.get("building").toString().equals("Main Block") )
                                 {
+                                    //get total number of AP for podium
                                     AnumAP++;
+                                    //get sum of download and upload for main building
+                                    downloadList[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                                    uploadList[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
+
+                                    //get sum of warning and critical AP
                                     if (singleAP.getInt("status")==1)
                                         warningList[0]++;
                                     else if (singleAP.getInt("status")==2)
@@ -132,7 +144,12 @@ public class BuildingActivity extends AppCompatActivity {
 
                                 else if (location.get("building").toString().equals("Podium Block"))
                                 {
+                                    //get total number of AP for podium
                                     BnumAP++;
+                                    //get sum of download and upload for podium building
+                                    downloadList[1] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                                    uploadList[1] += singleAP.getJSONObject("last_speedtest").getInt("upload");
+                                    //get sum of warning and critical AP
                                     if (singleAP.getInt("status")==1)
                                         warningList[1]++;
                                     else if (singleAP.getInt("status")==2)
@@ -144,6 +161,12 @@ public class BuildingActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    //get the mean for download and upload
+                    downloadList[0] /= AnumAP;
+                    uploadList[0] /= AnumAP;
+                    downloadList[1] /= BnumAP;
+                    uploadList[1] /= BnumAP;
+
                     Log.d("data","AnumAP: "+ AnumAP+" BnumAP: "+BnumAP);
 
                     runOnUiThread(new Runnable() {
@@ -154,7 +177,7 @@ public class BuildingActivity extends AppCompatActivity {
                             buildingnumAP = new int[]{AnumAP, BnumAP};
 
                             Log.d("data","received" );
-                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList);
+                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, warningList);
 
                         }
                     });

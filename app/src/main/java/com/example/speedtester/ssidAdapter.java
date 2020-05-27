@@ -1,6 +1,9 @@
 package com.example.speedtester;
 
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> {
-
+    private RecyclerViewClickListener clickListener;
 
     ArrayList<String> ssidList;
     ArrayList<JSONObject> lastSpeedtest;
@@ -25,11 +28,12 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
     Context context;
 
 
-    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status){
+    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status, RecyclerViewClickListener listener){
         context = c;
         ssidList = ssid;
         statusList = status;
         lastSpeedtest = Speedtest;
+        this.clickListener = listener;
 
     }
     @NonNull
@@ -38,7 +42,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         //always the same
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.ssid_details,parent,false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view,clickListener);
     }
 
     @Override
@@ -55,26 +59,33 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //setting colour for status indicator
+        if(statusList.get(position)==0){
+            String text = "Status: Normal";
+            SpannableString ss = new SpannableString(text);
+            ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorGreen));
+            ss.setSpan(greenIndicator, 8,14, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        if(statusList.get(position)==0)
-            holder.colourIndicator.setImageResource(R.drawable.green_indicator);
-        else if (statusList.get(position)==1)
-            holder.colourIndicator.setImageResource(R.drawable.yellow_indicator);
-        else if (statusList.get(position)==2)
-            holder.colourIndicator.setImageResource(R.drawable.red_indicator);
+            holder.statusTextView.setText(ss);
+        }
 
+        else if (statusList.get(position)==1) {
+            String text = "Status: Warning";
+            SpannableString ss = new SpannableString(text);
+            ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorOrange));
+            ss.setSpan(greenIndicator, 8,15, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-//        holder.ssidLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context,showApDetails.class);
-//                intent.putExtra("com.example.speedtester.ssid",data1[position][0]);
-//                intent.putExtra("com.example.speedtester.location",data1[position][2]);
-//                intent.putExtra("com.example.speedtester.ip",data1[position][7]);
-//                intent.putExtra("com.example.speedtester.site",data1[position][1]);
-//                context.startActivity(intent);
-//            }
-//        });
+            holder.statusTextView.setText(ss);
+        }
+
+        else if (statusList.get(position)==2) {
+            String text = "Status: Critical";
+            SpannableString ss = new SpannableString(text);
+            ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorRed));
+            ss.setSpan(greenIndicator, 8,16, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+
+            holder.statusTextView.setText(ss);
+        }
 
     }
 
@@ -83,21 +94,32 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         return ssidList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
-        TextView ssidTextView, downloadTextView, uploadTextView, pingTextView;
-        ImageView colourIndicator;
+        TextView ssidTextView, downloadTextView, uploadTextView, pingTextView,statusTextView;
         ConstraintLayout ssidLayout;
+        RecyclerViewClickListener clickListener;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, RecyclerViewClickListener clickListener) {
             super(itemView);
 
             ssidTextView = itemView.findViewById(R.id.ssidTextView);
             downloadTextView = itemView.findViewById(R.id.downloadTextView);
             uploadTextView = itemView.findViewById(R.id.uploadTextView);
             pingTextView = itemView.findViewById(R.id.pingTextView);
-            colourIndicator = itemView.findViewById(R.id.indicatorImageView);
+            statusTextView = itemView.findViewById(R.id.statusAPTextView);
             ssidLayout = itemView.findViewById(R.id.ssidLayout);
+            this.clickListener = clickListener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onClick(getAdapterPosition());
+        }
+    }
+
+    public interface RecyclerViewClickListener{
+        void onClick(int position);
     }
 }

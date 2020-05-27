@@ -8,43 +8,238 @@
     tools:context=".showApDetails">
 
     <TextView
-        android:id="@+id/showSsidTextView"
+        android:id="@+id/lastSpeedtestHeader2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
+        android:text="last speedtest:"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/levelAPTextView"
+        app:layout_constraintTop_toBottomOf="@+id/levelAPTextView" />
 
     <TextView
-        android:id="@+id/showSiteTextView"
+        android:id="@+id/locationHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="30dp"
+        android:text="location:"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
 
     <TextView
-        android:id="@+id/showLocationTextView"
+        android:id="@+id/timestampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:text="timestamp"
         android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/jitterTextView"
+        app:layout_constraintTop_toBottomOf="@+id/jitterTextView" />
+
+    <TextView
+        android:id="@+id/jitterTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="jitter"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/uploadAPTextView"
+        app:layout_constraintTop_toBottomOf="@+id/uploadAPTextView" />
+
+    <TextView
+        android:id="@+id/uploadAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="upload"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/downloadAPTextView"
+        app:layout_constraintTop_toBottomOf="@+id/downloadAPTextView" />
+
+    <TextView
+        android:id="@+id/passwordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="password"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/showIpTextView"
+        app:layout_constraintTop_toBottomOf="@+id/showIpTextView" />
+
+    <TextView
+        android:id="@+id/macTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="mac"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/qualityTextView"
+        app:layout_constraintTop_toBottomOf="@+id/qualityTextView" />
+
+    <TextView
+        android:id="@+id/raspiTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="raspi"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/macTextView"
+        app:layout_constraintTop_toBottomOf="@+id/macTextView" />
+
+    <TextView
+        android:id="@+id/downloadAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="download"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/pingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/pingTextView" />
+
+    <TextView
+        android:id="@+id/pingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="ping"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/lastSpeedtestHeader2"
+        app:layout_constraintTop_toBottomOf="@+id/lastSpeedtestHeader2" />
+
+    <TextView
+        android:id="@+id/descTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="description"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/raspiTextView"
+        app:layout_constraintTop_toBottomOf="@+id/raspiTextView" />
+
+    <TextView
+        android:id="@+id/showSsidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showSiteTextView" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ssid" />
+
+    <TextView
+        android:id="@+id/BuildingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/showSiteTextView"
+        app:layout_constraintTop_toBottomOf="@+id/showSiteTextView"
+        tools:text="building" />
+
+    <TextView
+        android:id="@+id/showSiteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/locationHeader"
+        app:layout_constraintTop_toBottomOf="@+id/locationHeader"
+        tools:text="site" />
+
+    <TextView
+        android:id="@+id/levelAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="level"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/BuildingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/BuildingTextView" />
 
     <TextView
         android:id="@+id/showIpTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="30dp"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showLocationTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView"
+        tools:text="ip address" />
+
+    <TextView
+        android:id="@+id/runtimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="runtime"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/passwordTextView"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
+
+    <TextView
+        android:id="@+id/device_idTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="device_id"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/runtimeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/runtimeTextView" />
+
+    <TextView
+        android:id="@+id/osTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="os"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/device_idTextView"
+        app:layout_constraintTop_toBottomOf="@+id/device_idTextView" />
+
+    <TextView
+        android:id="@+id/hardwareTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="hardware"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/osTextView"
+        app:layout_constraintTop_toBottomOf="@+id/osTextView" />
+
+    <TextView
+        android:id="@+id/statusAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="status"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/ignoreTextView"
+        app:layout_constraintTop_toBottomOf="@+id/ignoreTextView" />
+
+    <TextView
+        android:id="@+id/ignoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Ignore"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/hardwareTextView"
+        app:layout_constraintTop_toBottomOf="@+id/hardwareTextView" />
+
+    <TextView
+        android:id="@+id/qualityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="quality"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
+        app:layout_constraintTop_toBottomOf="@+id/statusAPTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

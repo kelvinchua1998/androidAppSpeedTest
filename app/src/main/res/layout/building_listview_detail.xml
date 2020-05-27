@@ -19,30 +19,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/totalLevelsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
-        android:text="levels: 10"
-        android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/summaryHeader" />
-
-    <TextView
         android:id="@+id/warningNumTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="30dp"
-        android:text="warning: 0"
+        android:layout_marginTop="40dp"
+        android:text="Warning: 0"
         android:textSize="25sp"
-        app:layout_constraintStart_toEndOf="@+id/summaryHeader"
-        app:layout_constraintTop_toBottomOf="@+id/summaryHeader" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/towerNameTextView" />
 
     <TextView
         android:id="@+id/criticalNumTextView"
@@ -50,11 +37,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="32dp"
-        android:text="critical: 0"
+        android:text="Critical: 0"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="@+id/warningNumTextView"
-        app:layout_constraintTop_toBottomOf="@+id/warningNumTextView" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/warningNumTextView"
+        app:layout_constraintTop_toTopOf="@+id/warningNumTextView" />
 
     <TextView
         android:id="@+id/totalAPTextView"
@@ -62,23 +49,41 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="30dp"
         android:text="AP: 100"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="@+id/totalLevelsTextView"
-        app:layout_constraintTop_toBottomOf="@+id/totalLevelsTextView" />
+        app:layout_constraintEnd_toStartOf="@+id/warningNumTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/warningNumTextView" />
 
     <TextView
-        android:id="@+id/summaryHeader"
+        android:id="@+id/aveInternetHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:text="Summary:"
+        android:layout_marginTop="30dp"
+        android:text="Average Internet Speedtest:"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/towerNameTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/warningNumTextView" />
+
+    <TextView
+        android:id="@+id/averageDownloadTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Download: 100Mps"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/aveInternetHeader"
+        app:layout_constraintTop_toBottomOf="@+id/aveInternetHeader" />
+
+    <TextView
+        android:id="@+id/averageUploadTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Upload: 100Mps"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/averageDownloadTextView"
+        app:layout_constraintTop_toBottomOf="@+id/averageDownloadTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

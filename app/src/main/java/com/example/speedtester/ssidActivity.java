@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -15,12 +17,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ssidActivity extends AppCompatActivity {
+public class ssidActivity extends AppCompatActivity implements ssidAdapter.RecyclerViewClickListener {
     RecyclerView ssidRecyclerView;
 
     String APListStrData;
     int levelIndex;
-    ArrayList APIndexSingleLevel;
+    ArrayList<Integer> APIndexSingleLevel;
     JSONArray APlist;
     String[] towerNames;
     String[] levelNames;
@@ -65,12 +67,12 @@ public class ssidActivity extends AppCompatActivity {
 
         ssidRecyclerView = (RecyclerView) findViewById(R.id.ssidRecyclerView);
 
-        ssidAdapter ssidAdapter = new ssidAdapter(this, data.ssidList, data.lastSpeedtest, data.statusList);
+        ssidAdapter ssidAdapter = new ssidAdapter(this, data.ssidList, data.lastSpeedtest, data.statusList,this);
         ssidRecyclerView.setAdapter(ssidAdapter);
         ssidRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
     }
+
 
     private ssidData getData(ArrayList<Integer> APIndexSingleLevel, JSONArray APlist){
         ArrayList<String> ssidList = new ArrayList<>();
@@ -101,9 +103,23 @@ public class ssidActivity extends AppCompatActivity {
         return data;
     }
 
+    @Override
+    public void onClick(int position) {
+        Intent showAPDetail = new Intent(getApplicationContext(),showApDetails.class);
+
+        Bundle extras = new Bundle();
+
+        extras.putInt("com.example.speedtester.APIndex", APIndexSingleLevel.get(position));
+        extras.putString("com.example.speedtester.data", APListStrData);
+
+        showAPDetail.putExtras(extras);
+        startActivity(showAPDetail);
+    }
+
     public class ssidData{
         ArrayList<String> ssidList;
         ArrayList<JSONObject> lastSpeedtest;
         ArrayList<Integer> statusList;
     }
+
 }

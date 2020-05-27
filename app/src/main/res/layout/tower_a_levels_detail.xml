@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
 
     <TextView
         android:id="@+id/towerLevelName"
@@ -9,9 +12,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:text="level x"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/numAPTextView"
@@ -19,10 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
         android:text="AP: 0"
-        android:textSize="24sp" />
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/towerLevelName" />
 
     <TextView
         android:id="@+id/warningTextView"
@@ -30,10 +37,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="250sp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:text="Warning: 0"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/towerLevelName" />
 
     <TextView
         android:id="@+id/criticalTextView"
@@ -41,8 +50,44 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="250dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginStart="16dp"
         android:text="Critical: 0"
-        android:textSize="24sp" />
-</RelativeLayout>
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/warningTextView"
+        app:layout_constraintTop_toTopOf="@+id/warningTextView" />
+
+    <TextView
+        android:id="@+id/normalTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="normal: 0"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/warningTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/warningTextView" />
+
+    <TextView
+        android:id="@+id/towerAveDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Download: 100Mps"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/towerAveUpload"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/warningTextView" />
+
+    <TextView
+        android:id="@+id/towerAveUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="Upload: 100Mps"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/warningTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

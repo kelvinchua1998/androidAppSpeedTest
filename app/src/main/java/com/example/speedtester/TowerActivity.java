@@ -59,7 +59,7 @@ public class TowerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        TowerAdapter towerlevelAdapter = new TowerAdapter(this, towerLevels, data.numAPEachLevel, data.warningEachLevel,data.criticalEachLevel);
+        TowerAdapter towerlevelAdapter = new TowerAdapter(this, towerLevels, data.numAPEachLevel,data.normalEachLevel, data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
         towerListView.setAdapter(towerlevelAdapter);
 
         towerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -86,7 +86,9 @@ public class TowerActivity extends AppCompatActivity {
         int[] numAPEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] warningEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] criticalEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
-
+        int[] normalEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+        int[] downloadEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+        int[] uploadEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         //initializing the array with ArrayList
         for (i = 0; i < indexAPEachLevel.length; i++) {
             indexAPEachLevel[i] = new ArrayList<>();
@@ -101,10 +103,17 @@ public class TowerActivity extends AppCompatActivity {
                     Log.d("data", "level:"+ location.getInt("level") + "ssid: "+ singleAP.getString("ssid"));
                     level = location.getInt("level");
                     if(level ==-1){
+                        //total number of ap
                         numAPEachLevel[0] += 1;
+                        //get index of ap in APlist for easy ref in the next page
                         indexAPEachLevel[0].add(i);
+                        //collate total number of ap for basement for each status
                         if(singleAP.getInt("status")==1) warningEachLevel[0]++;
                         else if (singleAP.getInt("status")==2) criticalEachLevel[0]++;
+                        else if (singleAP.getInt("status")==0) normalEachLevel[0]++;
+                        //get sum of download and upload
+                        downloadEachLevel[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                        uploadEachLevel[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
                     }
 
                     else{
@@ -112,6 +121,10 @@ public class TowerActivity extends AppCompatActivity {
                         indexAPEachLevel[level].add(i);
                         if(singleAP.getInt("status")==1) warningEachLevel[level]++;
                         else if (singleAP.getInt("status")==2) criticalEachLevel[level]++;
+                        else if (singleAP.getInt("status")==0) normalEachLevel[level]++;
+
+                        downloadEachLevel[level] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                        uploadEachLevel[level] += singleAP.getJSONObject("last_speedtest").getInt("upload");
                     }
 
                 }
@@ -125,6 +138,10 @@ public class TowerActivity extends AppCompatActivity {
                         indexAPEachLevel[0].add(i);
                         if(singleAP.getInt("status")==1) warningEachLevel[0]++;
                         else if (singleAP.getInt("status")==2) criticalEachLevel[0]++;
+                        else if (singleAP.getInt("status")==0) normalEachLevel[0]++;
+
+                        downloadEachLevel[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                        uploadEachLevel[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
                     }
 
                     else{
@@ -132,10 +149,20 @@ public class TowerActivity extends AppCompatActivity {
                         indexAPEachLevel[level].add(i);
                         if(singleAP.getInt("status")==1) warningEachLevel[level]++;
                         else if (singleAP.getInt("status")==2) criticalEachLevel[level]++;
+                        else if (singleAP.getInt("status")==0) normalEachLevel[level]++;
+
+                        downloadEachLevel[level] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                        uploadEachLevel[level] += singleAP.getJSONObject("last_speedtest").getInt("upload");
                     }
 
                 }
             }
+        }
+
+        //get mean of download and upload for each level
+        for (i =0; i < numAPEachLevel.length;i++){
+            downloadEachLevel[i] /= numAPEachLevel[i];
+            uploadEachLevel[i] /= numAPEachLevel[i];
         }
 
         Log.d("data", "getNumAp: calculated ");
@@ -147,6 +174,9 @@ public class TowerActivity extends AppCompatActivity {
         data.indexAPEachLevel = indexAPEachLevel;
         data.warningEachLevel = warningEachLevel;
         data.criticalEachLevel = criticalEachLevel;
+        data.normalEachLevel = normalEachLevel;
+        data.downloadEachLevel = downloadEachLevel;
+        data.uploadEachLevel = uploadEachLevel;
 
         return data;
 
@@ -157,5 +187,8 @@ public class TowerActivity extends AppCompatActivity {
         int[] numAPEachLevel;
         int[] warningEachLevel;
         int[] criticalEachLevel;
+        int[] normalEachLevel;
+        int[] uploadEachLevel;
+        int[] downloadEachLevel;
     }
 }
