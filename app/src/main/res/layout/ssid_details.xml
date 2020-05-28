@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ssidLayout"
     android:layout_width="match_parent"
-    android:layout_height="170dp">
+    android:layout_height="170dp"
+    android:animateLayoutChanges="false"
+    android:fadeScrollbars="false">
 
 
     <TextView
@@ -57,4 +59,15 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ssidTextView"
         app:layout_constraintTop_toBottomOf="@+id/ssidTextView" />
+
+    <TextView
+        android:id="@+id/runtimessidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:text="runtime"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/ssidTextView"
+        app:layout_constraintTop_toTopOf="@+id/statusAPTextView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,14 +24,16 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
     ArrayList<String> ssidList;
     ArrayList<JSONObject> lastSpeedtest;
     ArrayList<Integer> statusList;
+    ArrayList<Integer> runtimeList;
     Context context;
 
 
-    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status, RecyclerViewClickListener listener){
+    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status,ArrayList<Integer> runtime, RecyclerViewClickListener listener){
         context = c;
         ssidList = ssid;
         statusList = status;
         lastSpeedtest = Speedtest;
+        runtimeList = runtime;
         this.clickListener = listener;
 
     }
@@ -47,26 +48,42 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        holder.ssidTextView.setText(ssidList.get(position));
+        int download=0;
+        int upload=0;
+        int ping=0;
+        int runtime;
         try {
-            int download = lastSpeedtest.get(position).getInt("download");
-            int upload = lastSpeedtest.get(position).getInt("upload");
-            int ping = lastSpeedtest.get(position).getInt("ping");
-
-            holder.downloadTextView.setText("download: "+ download);
-            holder.uploadTextView.setText("upload: "+ upload);
-            holder.pingTextView.setText("ping: "+ ping);
+            download = lastSpeedtest.get(position).getInt("download");
+            upload = lastSpeedtest.get(position).getInt("upload");
+            ping = lastSpeedtest.get(position).getInt("ping");
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        holder.ssidTextView.setText(ssidList.get(position));
+
+        runtime = runtimeList.get(position);
+        holder.runtimeTextView.setText("runtime: "+runtime);
+        holder.downloadTextView.setText("download: "+ download);
+        holder.uploadTextView.setText("upload: "+ upload);
+        holder.pingTextView.setText("ping: "+ ping);
+
         //setting colour for status indicator
+        SpannableString text = getStatusText(position);
+
+        holder.statusTextView.setText(text);
+
+
+    }
+
+    private SpannableString getStatusText(int position) {
         if(statusList.get(position)==0){
             String text = "Status: Normal";
             SpannableString ss = new SpannableString(text);
             ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorGreen));
             ss.setSpan(greenIndicator, 8,14, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            holder.statusTextView.setText(ss);
+            return ss;
         }
 
         else if (statusList.get(position)==1) {
@@ -75,7 +92,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
             ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorOrange));
             ss.setSpan(greenIndicator, 8,15, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            holder.statusTextView.setText(ss);
+            return ss;
         }
 
         else if (statusList.get(position)==2) {
@@ -84,9 +101,9 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
             ForegroundColorSpan greenIndicator = new ForegroundColorSpan(context.getResources().getColor(R.color.indicatorRed));
             ss.setSpan(greenIndicator, 8,16, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-            holder.statusTextView.setText(ss);
+            return ss;
         }
-
+        return null;
     }
 
     @Override
@@ -96,7 +113,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
-        TextView ssidTextView, downloadTextView, uploadTextView, pingTextView,statusTextView;
+        TextView ssidTextView, downloadTextView, uploadTextView, pingTextView,statusTextView,runtimeTextView;
         ConstraintLayout ssidLayout;
         RecyclerViewClickListener clickListener;
 
@@ -108,6 +125,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
             uploadTextView = itemView.findViewById(R.id.uploadTextView);
             pingTextView = itemView.findViewById(R.id.pingTextView);
             statusTextView = itemView.findViewById(R.id.statusAPTextView);
+            runtimeTextView = itemView.findViewById(R.id.runtimessidTextView);
             ssidLayout = itemView.findViewById(R.id.ssidLayout);
             this.clickListener = clickListener;
             itemView.setOnClickListener(this);

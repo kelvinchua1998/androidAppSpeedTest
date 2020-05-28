@@ -89,7 +89,7 @@ public class buildingAdapter extends BaseAdapter {
         criticalNumberTextView.setText("critical: "+criticalNum);
 
         downloadTextView.setText("Download: "+ download+"Mb/s");
-        uploadTextView.setText("upload: "+ upload+"Mb/s");
+        uploadTextView.setText("Upload     : "+ upload+"Mb/s");
         return v;
     }
 

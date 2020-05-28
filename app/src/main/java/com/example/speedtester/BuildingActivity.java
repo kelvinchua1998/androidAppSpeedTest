@@ -89,7 +89,7 @@ public class BuildingActivity extends AppCompatActivity {
 
     }
     private void connectAPI(){
-        boolean isTest = true;
+        boolean isTest = false;
         String url ;
         if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
         else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
@@ -177,7 +177,7 @@ public class BuildingActivity extends AppCompatActivity {
                             buildingnumAP = new int[]{AnumAP, BnumAP};
 
                             Log.d("data","received" );
-                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, warningList);
+                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);
 
                         }
                     });

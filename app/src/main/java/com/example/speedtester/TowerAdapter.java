@@ -52,7 +52,7 @@ public class TowerAdapter extends BaseAdapter {
 
         TextView towerLevelname = (TextView) v.findViewById(R.id.towerLevelName);
         TextView numAPTextView = (TextView) v.findViewById(R.id.numAPTextView);
-        TextView normalTextView = (TextView) v.findViewById(R.id.normalTextView);
+//        TextView normalTextView = (TextView) v.findViewById(R.id.normalTextView);
         TextView warningTextView = (TextView) v.findViewById(R.id.warningTextView);
         TextView criticalTextView = (TextView) v.findViewById(R.id.criticalTextView);
         TextView downloadTextView = (TextView) v.findViewById(R.id.towerAveDownload);
@@ -61,7 +61,7 @@ public class TowerAdapter extends BaseAdapter {
         String level = towerLevels[position];
 
         int AP = towernumAP[position];
-        int normal = towerNormal[position];
+//        int normal = towerNormal[position];
         int warning = towerWarning[position];
         int critical = towerCritical[position];
         int download = towerDownload[position];
@@ -69,12 +69,12 @@ public class TowerAdapter extends BaseAdapter {
 
         towerLevelname.setText(level);
 
-        numAPTextView.setText("AP: " + AP);
-        normalTextView.setText("Normal: "+ normal);
+        numAPTextView.setText("Total: " + AP);
+//        normalTextView.setText("Normal: "+ normal);
         warningTextView.setText("Warning: " + warning);
-        criticalTextView.setText("critical: " + critical);
+        criticalTextView.setText("Critical: " + critical);
         downloadTextView.setText("Download: "+ download +"Mb/s");
-        uploadTextView.setText("Download: "+ upload +"Mb/s");
+        uploadTextView.setText("Upload: "+ upload +"Mb/s");
         return v;
     }
 }

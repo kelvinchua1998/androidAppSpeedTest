@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">speedtester</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="not_registered">Not Registered?</string>
+    <string name="register">register</string>
+    <string name="confirm_password">confirm Password</string>
+    <string name="already_registered">Already Registered?</string>
+    <string name="phone_number">phone number</string>
+    <string name="forgot_password">forgot password?</string>
+    <string name="verify">verify</string>
+    <string name="resend_again">Resend again</string>
 
     <string-array name="building_name">
         <item>Main Block</item>
@@ -7,36 +18,36 @@
     </string-array>
 
     <string-array name="Main_Block">
-        <item>basement 1</item>
-        <item>level 1</item>
-        <item>level 2</item>
-        <item>level 3</item>
-        <item>level 4</item>
-        <item>level 5</item>
-        <item>level 6</item>
-        <item>level 7</item>
-        <item>level 8</item>
-        <item>level 9</item>
-        <item>level 10</item>
+        <item>B 1</item>
+        <item>Level 1</item>
+        <item>Level 2</item>
+        <item>Level 3</item>
+        <item>Level 4</item>
+        <item>Level 5</item>
+        <item>Level 6</item>
+        <item>Level 7</item>
+        <item>Level 8</item>
+        <item>Level 9</item>
+        <item>Level 10</item>
     </string-array>
 
     <string-array name="Podium_Block">
-        <item>basement 1</item>
-        <item>level 1</item>
-        <item>level 2</item>
-        <item>level 3</item>
-        <item>level 4</item>
-        <item>level 5</item>
-        <item>level 6</item>
-        <item>level 7</item>
-        <item>level 8</item>
-        <item>level 9</item>
-        <item>level 10</item>
+        <item>B 1</item>
+        <item>Level 1</item>
+        <item>Level 2</item>
+        <item>Level 3</item>
+        <item>Level 4</item>
+        <item>Level 5</item>
+        <item>Level 6</item>
+        <item>Level 7</item>
+        <item>Level 8</item>
+        <item>Level 9</item>
+        <item>Level 10</item>
     </string-array>
 
     <string-array name="config">
-        <item name = "url">http://localhost:8081/api/speedtest/getaplist</item>
-        <item name = "token">token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade</item>
-        <item name = "mediaType">application/x-www-form-urlencoded</item>
+        <item name="url">http://localhost:8081/api/speedtest/getaplist</item>
+        <item name="token">token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade</item>
+        <item name="mediaType">application/x-www-form-urlencoded</item>
     </string-array>
 </resources>

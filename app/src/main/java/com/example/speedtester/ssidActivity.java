@@ -1,11 +1,14 @@
 package com.example.speedtester;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,6 +60,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
             levelNames = res.getStringArray(R.array.Main_Block);
         else if (buildingIndex == 1)
             levelNames = res.getStringArray(R.array.Podium_Block);
+
         getSupportActionBar().setTitle(towerNames[buildingIndex]);
         getSupportActionBar().setSubtitle(levelNames[levelIndex]);
 
@@ -67,10 +71,16 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
         ssidRecyclerView = (RecyclerView) findViewById(R.id.ssidRecyclerView);
 
-        ssidAdapter ssidAdapter = new ssidAdapter(this, data.ssidList, data.lastSpeedtest, data.statusList,this);
+        ssidAdapter ssidAdapter = new ssidAdapter(this, data.ssidList, data.lastSpeedtest, data.statusList,data.runtimeList,this);
         ssidRecyclerView.setAdapter(ssidAdapter);
         ssidRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        ssidRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        // Get drawable object
+        Drawable mDivider = ContextCompat.getDrawable(this, R.drawable.divider);
+        // Create a DividerItemDecoration whose orientation is vertical
+        DividerItemDecoration vItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        // Set the drawable on it
+        vItemDecoration.setDrawable(mDivider);
     }
 
 
@@ -78,7 +88,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         ArrayList<String> ssidList = new ArrayList<>();
         ArrayList<JSONObject> lastSpeedtest = new ArrayList<>();
         ArrayList<Integer> statusList = new ArrayList<>();
-
+        ArrayList<Integer> runtimeList = new ArrayList<>();
         for(int i=0; i<APIndexSingleLevel.size();i++){
 
             JSONObject singleAP = null;
@@ -89,6 +99,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
                 ssidList.add(singleAP.getString("ssid"));
                 lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
                 statusList.add(singleAP.getInt("status"));
+                runtimeList.add(singleAP.getInt("runtime"));
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -100,6 +111,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         data.ssidList = ssidList;
         data.lastSpeedtest = lastSpeedtest;
         data.statusList = statusList;
+        data.runtimeList = runtimeList;
         return data;
     }
 
@@ -120,6 +132,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         ArrayList<String> ssidList;
         ArrayList<JSONObject> lastSpeedtest;
         ArrayList<Integer> statusList;
+        ArrayList<Integer> runtimeList;
     }
 
 }

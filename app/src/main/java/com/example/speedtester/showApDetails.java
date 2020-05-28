@@ -8,6 +8,10 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +22,7 @@ public class showApDetails extends AppCompatActivity {
 
     String ssid,password,os,hardware,mac,raspi,description, site,building,level , ip;
     int ping,download,upload,jitter,runtime,status,device_id,ignore,quality,timestamp;
+    GraphView graphView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +47,17 @@ public class showApDetails extends AppCompatActivity {
 
         ssidTextView = (TextView)findViewById(R.id.showSsidTextView);
 
-        ipTextView = (TextView)findViewById(R.id.showIpTextView);
+//        ipTextView = (TextView)findViewById(R.id.showIpTextView);
         passwordTextView = (TextView)findViewById(R.id.passwordTextView);
-        runtimeTextView = (TextView)findViewById(R.id.runtimeTextView);
-        device_idTextView = (TextView)findViewById(R.id.device_idTextView);
-        osTextView = (TextView)findViewById(R.id.osTextView);
-        hardwareTextView = (TextView)findViewById(R.id.hardwareTextView);
-        ignoreTextView = (TextView)findViewById(R.id.ignoreTextView);
+        runtimeTextView = (TextView)findViewById(R.id.runtimessidTextView);
+//        device_idTextView = (TextView)findViewById(R.id.device_idTextView);
+//        osTextView = (TextView)findViewById(R.id.osTextView);
+//        hardwareTextView = (TextView)findViewById(R.id.hardwareTextView);
+//        ignoreTextView = (TextView)findViewById(R.id.ignoreTextView);
         statusTextView = (TextView)findViewById(R.id.statusAPTextView);
-        qualityTextView = (TextView)findViewById(R.id.qualityTextView);
-        macTextView = (TextView)findViewById(R.id.macTextView);
-        raspiTextView = (TextView)findViewById(R.id.raspiTextView);
+//        qualityTextView = (TextView)findViewById(R.id.qualityTextView);
+//        macTextView = (TextView)findViewById(R.id.macTextView);
+//        raspiTextView = (TextView)findViewById(R.id.raspiTextView);
 
         siteTextView = (TextView)findViewById(R.id.showSiteTextView);
         buildingTextView = (TextView)findViewById(R.id.BuildingTextView);
@@ -64,7 +69,7 @@ public class showApDetails extends AppCompatActivity {
         jitterTextView = (TextView)findViewById(R.id.jitterTextView);
         timestampTextView = (TextView)findViewById(R.id.timestampTextView);
 
-        descriptionTextView = (TextView)findViewById(R.id.descTextView);
+//        descriptionTextView = (TextView)findViewById(R.id.descTextView);
 
 
 
@@ -104,20 +109,20 @@ public class showApDetails extends AppCompatActivity {
 
 
         ssidTextView.setText(ssid);
-        ipTextView.setText("ip: "+ip);
+//        ipTextView.setText("ip: "+ip);
         passwordTextView.setText("password: "+password);
         runtimeTextView.setText("runtime: "+runtime);
-        device_idTextView.setText("device_id: "+device_id);
-        osTextView.setText("os: "+os);
-        hardwareTextView.setText("hardware: "+hardware);
-        ignoreTextView.setText("ignore: "+ignore);
+//        device_idTextView.setText("device_id: "+device_id);
+//        osTextView.setText("os: "+os);
+//        hardwareTextView.setText("hardware: "+hardware);
+//        ignoreTextView.setText("ignore: "+ignore);
 
         SpannableString status = setStatusTextView();
         statusTextView.setText(status);
 
-        qualityTextView.setText("quality: "+quality);
-        macTextView.setText("mac: "+mac);
-        raspiTextView.setText("raspi: "+raspi);
+//        qualityTextView.setText("quality: "+quality);
+//        macTextView.setText("mac: "+mac);
+//        raspiTextView.setText("raspi: "+raspi);
 
         siteTextView.setText("site: "+site);
         buildingTextView.setText("building: "+building);
@@ -129,7 +134,17 @@ public class showApDetails extends AppCompatActivity {
         jitterTextView.setText("jitter: "+jitter);
         timestampTextView.setText("timestamp: "+timestamp);
 
-        descriptionTextView.setText("description: "+description);
+//        descriptionTextView.setText("description: "+description);
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                new DataPoint(0, 1),
+                new DataPoint(1, 5),
+                new DataPoint(2, 3),
+                new DataPoint(3, 2),
+                new DataPoint(4, 6)
+        });
+        graph.addSeries(series);
 
     }
 

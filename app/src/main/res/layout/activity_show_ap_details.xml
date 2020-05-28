@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,21 +17,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="last speedtest:"
+        android:text="speedtest:"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/levelAPTextView"
+        app:layout_constraintStart_toStartOf="@+id/locationHeader"
         app:layout_constraintTop_toBottomOf="@+id/levelAPTextView" />
 
     <TextView
         android:id="@+id/locationHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
         android:layout_marginTop="30dp"
         android:text="location:"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
+        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
+        app:layout_constraintTop_toBottomOf="@+id/statusAPTextView" />
 
     <TextView
         android:id="@+id/timestampTextView"
@@ -62,31 +66,12 @@
         android:id="@+id/passwordTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         android:text="password"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/showIpTextView"
-        app:layout_constraintTop_toBottomOf="@+id/showIpTextView" />
-
-    <TextView
-        android:id="@+id/macTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="mac"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/qualityTextView"
-        app:layout_constraintTop_toBottomOf="@+id/qualityTextView" />
-
-    <TextView
-        android:id="@+id/raspiTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="raspi"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/macTextView"
-        app:layout_constraintTop_toBottomOf="@+id/macTextView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
 
     <TextView
         android:id="@+id/downloadAPTextView"
@@ -102,21 +87,12 @@
         android:id="@+id/pingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="ping"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/lastSpeedtestHeader2"
         app:layout_constraintTop_toBottomOf="@+id/lastSpeedtestHeader2" />
-
-    <TextView
-        android:id="@+id/descTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="description"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/raspiTextView"
-        app:layout_constraintTop_toBottomOf="@+id/raspiTextView" />
 
     <TextView
         android:id="@+id/showSsidTextView"
@@ -145,6 +121,7 @@
         android:id="@+id/showSiteTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="@+id/locationHeader"
@@ -162,18 +139,7 @@
         app:layout_constraintTop_toBottomOf="@+id/BuildingTextView" />
 
     <TextView
-        android:id="@+id/showIpTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView"
-        tools:text="ip address" />
-
-    <TextView
-        android:id="@+id/runtimeTextView"
+        android:id="@+id/runtimessidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -183,63 +149,22 @@
         app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
 
     <TextView
-        android:id="@+id/device_idTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="device_id"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/runtimeTextView"
-        app:layout_constraintTop_toBottomOf="@+id/runtimeTextView" />
-
-    <TextView
-        android:id="@+id/osTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="os"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/device_idTextView"
-        app:layout_constraintTop_toBottomOf="@+id/device_idTextView" />
-
-    <TextView
-        android:id="@+id/hardwareTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="hardware"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/osTextView"
-        app:layout_constraintTop_toBottomOf="@+id/osTextView" />
-
-    <TextView
         android:id="@+id/statusAPTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="status"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/ignoreTextView"
-        app:layout_constraintTop_toBottomOf="@+id/ignoreTextView" />
+        app:layout_constraintStart_toStartOf="@+id/runtimessidTextView"
+        app:layout_constraintTop_toBottomOf="@+id/runtimessidTextView" />
 
-    <TextView
-        android:id="@+id/ignoreTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Ignore"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/hardwareTextView"
-        app:layout_constraintTop_toBottomOf="@+id/hardwareTextView" />
-
-    <TextView
-        android:id="@+id/qualityTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="quality"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/statusAPTextView" />
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@+id/timestampTextView"
+        tools:layout_editor_absoluteX="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

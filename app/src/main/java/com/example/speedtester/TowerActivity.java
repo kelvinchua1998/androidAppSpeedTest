@@ -36,6 +36,7 @@ public class TowerActivity extends AppCompatActivity {
         Bundle extras = in.getExtras();
         buildingIndex = extras.getInt("com.example.speedtester.buildingIndex", -1);
         APListStrData = extras.getString("com.example.speedtester.data");
+
         try {
             APlist = new JSONArray(APListStrData);
         } catch (JSONException e) {
@@ -98,8 +99,10 @@ public class TowerActivity extends AppCompatActivity {
 
             JSONObject singleAP = APlist.getJSONObject(i);
             JSONObject location = singleAP.getJSONObject("location");
+
             if (buildingIndex==0){
                 if (location.get("building").toString().equals(buildingName[0])){
+
                     Log.d("data", "level:"+ location.getInt("level") + "ssid: "+ singleAP.getString("ssid"));
                     level = location.getInt("level");
                     if(level ==-1){
@@ -133,7 +136,7 @@ public class TowerActivity extends AppCompatActivity {
             else if (buildingIndex==1){
                 if (location.get("building").toString().equals(buildingName[1])){
                     level = location.getInt("level");
-                    if(level ==-1){
+                    if(level == -1){
                         numAPEachLevel[0] += 1;
                         indexAPEachLevel[0].add(i);
                         if(singleAP.getInt("status")==1) warningEachLevel[0]++;
@@ -161,8 +164,17 @@ public class TowerActivity extends AppCompatActivity {
 
         //get mean of download and upload for each level
         for (i =0; i < numAPEachLevel.length;i++){
-            downloadEachLevel[i] /= numAPEachLevel[i];
-            uploadEachLevel[i] /= numAPEachLevel[i];
+            if (numAPEachLevel[i] == 0)
+            {
+                downloadEachLevel[i]=0;
+                uploadEachLevel[i]=0;
+            }
+            else
+                {
+                downloadEachLevel[i] /= numAPEachLevel[i];
+                uploadEachLevel[i] /= numAPEachLevel[i];
+            }
+
         }
 
         Log.d("data", "getNumAp: calculated ");
