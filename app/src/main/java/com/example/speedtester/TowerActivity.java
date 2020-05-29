@@ -2,6 +2,7 @@ package com.example.speedtester;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +28,9 @@ public class TowerActivity extends AppCompatActivity {
     JSONArray APlist;
     String APListStrData;
     int buildingIndex;
+    TextView warningTextView;
+    final ArrayList<Integer> arrayIndex = new ArrayList<>();
+    Context context = GlobalApplication.getAppContext();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,20 +64,56 @@ public class TowerActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //get the length
 
-        TowerAdapter towerlevelAdapter = new TowerAdapter(this, towerLevels, data.numAPEachLevel,data.normalEachLevel, data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+
+
+        for (int i =0; i<data.numAPEachLevel.length; i++){
+            if (data.numAPEachLevel[i]!=0)
+                arrayIndex.add(i);
+        }
+
+        String[] filteredTowerLevels = new String[arrayIndex.size()];
+        int[] filtnumAPEachLevel = new int[arrayIndex.size()];
+        int[] filtnormalEachLevel = new int[arrayIndex.size()];
+        int[] filtwarningEachLevel = new int[arrayIndex.size()];
+        int[] filtcriticalEachLevel= new int[arrayIndex.size()];
+        int[] filtdownloadEachLevel = new int[arrayIndex.size()];
+        int[] filtuploadEachLevel = new int[arrayIndex.size()];
+
+        for (int i = 0; i<arrayIndex.size();i++){
+
+            filteredTowerLevels[i] =towerLevels[arrayIndex.get(i)];
+            filtnumAPEachLevel[i] = data.numAPEachLevel[arrayIndex.get(i)];
+            filtnormalEachLevel[i] = data.normalEachLevel[arrayIndex.get(i)];
+            filtwarningEachLevel[i] = data.warningEachLevel[arrayIndex.get(i)];
+            filtcriticalEachLevel[i] = data.criticalEachLevel[arrayIndex.get(i)];
+            filtdownloadEachLevel[i] = data.downloadEachLevel[arrayIndex.get(i)];
+            filtuploadEachLevel[i] = data.uploadEachLevel[arrayIndex.get(i)];
+
+
+        }
+        TowerAdapter towerlevelAdapter = new TowerAdapter(this, filteredTowerLevels, filtnumAPEachLevel,filtnormalEachLevel, filtwarningEachLevel,filtcriticalEachLevel,filtdownloadEachLevel,filtuploadEachLevel);
         towerListView.setAdapter(towerlevelAdapter);
+
+        // Making variables global
+        data.APListStrData = APListStrData;
+        data.arrayIndex = arrayIndex;
+        data.buildingIndex = buildingIndex;
+        data.context = getApplicationContext();
 
         towerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                     Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
 
                     Bundle extras = new Bundle();
-
+                    extras.putString("from", "listView");
                     extras.putString("com.example.speedtester.data", APListStrData);
-                    extras.putInt("com.example.speedtester.level", position); //pass the postion to next screen
-                    extras.putIntegerArrayList("com.example.speedtester.APIndexEachLevel",data.indexAPEachLevel[position]);
+                    int trueLevel = arrayIndex.get(position);
+                    extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+                    extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
                     extras.putInt("com.example.speedtester.buildingIndex", buildingIndex);
 
                     showSsidActivity.putExtras(extras);
@@ -84,12 +125,14 @@ public class TowerActivity extends AppCompatActivity {
     private APData getNumAp(int buildingIndex, JSONArray APlist, String[] buildingName) throws JSONException {
         int i,level;
         ArrayList<Integer>[] indexAPEachLevel = new ArrayList[11];// An arrayList containing array list
+
         int[] numAPEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] warningEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] criticalEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] normalEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] downloadEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
         int[] uploadEachLevel = new int[] {0,0,0,0,0,0,0,0,0,0,0};
+
         //initializing the array with ArrayList
         for (i = 0; i < indexAPEachLevel.length; i++) {
             indexAPEachLevel[i] = new ArrayList<>();
@@ -177,6 +220,8 @@ public class TowerActivity extends AppCompatActivity {
 
         }
 
+
+
         Log.d("data", "getNumAp: calculated ");
 
         //return a class that contain all the data
@@ -194,13 +239,59 @@ public class TowerActivity extends AppCompatActivity {
 
     }
 
-    public class APData{
-        ArrayList<Integer>[] indexAPEachLevel;
+    public void onWarningClick(View v,int position) {
+
+        Intent showWarningAP = new Intent(context, ssidActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putString("from", "warning");
+
+        int trueLevel = data.arrayIndex.get(position);
+        extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
+
+        extras.putString("com.example.speedtester.data", data.APListStrData);
+
+        extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+        extras.putInt("com.example.speedtester.buildingIndex", data.buildingIndex);
+
+        showWarningAP.putExtras(extras);
+        v.getContext().startActivity(showWarningAP);
+    }
+
+    public void onCriticalClick(View v, int position) {
+        Intent showWarningAP = new Intent(context, ssidActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putString("from", "critical");
+
+        int trueLevel = data.arrayIndex.get(position);
+        extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
+
+        extras.putString("com.example.speedtester.data", data.APListStrData);
+
+        extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+        extras.putInt("com.example.speedtester.buildingIndex", data.buildingIndex);
+
+        showWarningAP.putExtras(extras);
+        v.getContext().startActivity(showWarningAP);
+    }
+
+    public static class APData{
+        public static ArrayList<Integer>[] indexAPEachLevel;
+        public static Context context;
         int[] numAPEachLevel;
         int[] warningEachLevel;
         int[] criticalEachLevel;
         int[] normalEachLevel;
         int[] uploadEachLevel;
         int[] downloadEachLevel;
+
+        public static ArrayList<Integer> arrayIndex;
+        public static String APListStrData;
+        public static int buildingIndex;
+
+
     }
+
+
 }

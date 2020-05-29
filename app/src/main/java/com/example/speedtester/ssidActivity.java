@@ -25,13 +25,13 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
     String APListStrData;
     int levelIndex;
-    ArrayList<Integer> APIndexSingleLevel;
+    ArrayList<Integer> APIndex;
     JSONArray APlist;
     String[] towerNames;
     String[] levelNames;
     int buildingIndex;
     ssidData data;
-
+    String from;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +41,10 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         Bundle extras = in.getExtras();
 
         //get data in
+        from = extras.getString("from");
         levelIndex = extras.getInt("com.example.speedtester.level", -1);
         APListStrData = extras.getString("com.example.speedtester.data");
-        APIndexSingleLevel = extras.getIntegerArrayList("com.example.speedtester.APIndexEachLevel");
+        APIndex = extras.getIntegerArrayList("com.example.speedtester.APIndex");
         buildingIndex = extras.getInt("com.example.speedtester.buildingIndex", -1);
 
         // parse data into APlist
@@ -61,12 +62,18 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         else if (buildingIndex == 1)
             levelNames = res.getStringArray(R.array.Podium_Block);
 
-        getSupportActionBar().setTitle(towerNames[buildingIndex]);
-        getSupportActionBar().setSubtitle(levelNames[levelIndex]);
+        if(from.equals("buildingWarning") || from.equals("buildingCritical"))
+        {
+            getSupportActionBar().setTitle(towerNames[buildingIndex]);
+        }else{
+            getSupportActionBar().setTitle(towerNames[buildingIndex]);
+            getSupportActionBar().setSubtitle(levelNames[levelIndex]);
+        }
+
 
         //get ap index for the level and the ap list for the level
 
-        data = getData(APIndexSingleLevel, APlist);
+        data = getData(APIndex, APlist,from,buildingIndex);
 
 
         ssidRecyclerView = (RecyclerView) findViewById(R.id.ssidRecyclerView);
@@ -84,22 +91,84 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
     }
 
 
-    private ssidData getData(ArrayList<Integer> APIndexSingleLevel, JSONArray APlist){
+    private ssidData getData(ArrayList<Integer> APIndex, JSONArray APlist,String from,int buildingIndex){
         ArrayList<String> ssidList = new ArrayList<>();
         ArrayList<JSONObject> lastSpeedtest = new ArrayList<>();
         ArrayList<Integer> statusList = new ArrayList<>();
         ArrayList<Integer> runtimeList = new ArrayList<>();
-        for(int i=0; i<APIndexSingleLevel.size();i++){
+        for(int i=0; i<APIndex.size();i++){
 
             JSONObject singleAP = null;
 
             try {
-                singleAP = APlist.getJSONObject(APIndexSingleLevel.get(i));
+                singleAP = APlist.getJSONObject(APIndex.get(i));
+                if (from.equals("listView")){
+                    ssidList.add(singleAP.getString("ssid"));
+                    lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                    statusList.add(singleAP.getInt("status"));
+                    runtimeList.add(singleAP.getInt("runtime"));
+                }
+                else if (from.equals("warning")){
+                    // the AP into the data if the status is warning
+                    if (singleAP.getInt("status")==1){
+                        ssidList.add(singleAP.getString("ssid"));
+                        lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                        statusList.add(singleAP.getInt("status"));
+                        runtimeList.add(singleAP.getInt("runtime"));
+                    }
+                }
+                else if (from.equals("critical")){
+                    // the AP into the data if the status is warning
+                    if (singleAP.getInt("status")==2){
+                        ssidList.add(singleAP.getString("ssid"));
+                        lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                        statusList.add(singleAP.getInt("status"));
+                        runtimeList.add(singleAP.getInt("runtime"));
+                    }
+                }
+                else if (from.equals("buildingWarning")){
+                    // the AP into the data if the status is warning
+                    if (singleAP.getInt("status")==1){
+                        if (buildingIndex == 0){
+                            if(singleAP.getJSONObject("location").getString("building").equals("Main Block")){
+                                ssidList.add(singleAP.getString("ssid"));
+                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                                statusList.add(singleAP.getInt("status"));
+                                runtimeList.add(singleAP.getInt("runtime"));
+                            }
+                        }else if(buildingIndex == 1){
+                            if(singleAP.getJSONObject("location").getString("building").equals("Podium Block")){
+                                ssidList.add(singleAP.getString("ssid"));
+                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                                statusList.add(singleAP.getInt("status"));
+                                runtimeList.add(singleAP.getInt("runtime"));
+                            }
+                        }
 
-                ssidList.add(singleAP.getString("ssid"));
-                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                statusList.add(singleAP.getInt("status"));
-                runtimeList.add(singleAP.getInt("runtime"));
+                    }
+                }
+                else if (from.equals("buildingCritical")){
+                    // the AP into the data if the status is warning
+                    if (singleAP.getInt("status")==2){
+                        if (buildingIndex == 0){
+                            if(singleAP.getJSONObject("location").getString("building").equals("Main Block")){
+                                ssidList.add(singleAP.getString("ssid"));
+                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                                statusList.add(singleAP.getInt("status"));
+                                runtimeList.add(singleAP.getInt("runtime"));
+                            }
+                        }else if(buildingIndex == 1){
+                            if(singleAP.getJSONObject("location").getString("building").equals("Podium Block")){
+                                ssidList.add(singleAP.getString("ssid"));
+                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                                statusList.add(singleAP.getInt("status"));
+                                runtimeList.add(singleAP.getInt("runtime"));
+                            }
+                        }
+
+                    }
+                }
+
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -121,7 +190,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
         Bundle extras = new Bundle();
 
-        extras.putInt("com.example.speedtester.APIndex", APIndexSingleLevel.get(position));
+        extras.putInt("com.example.speedtester.APIndex", APIndex.get(position));
         extras.putString("com.example.speedtester.data", APListStrData);
 
         showAPDetail.putExtras(extras);

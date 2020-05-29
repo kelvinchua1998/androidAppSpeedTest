@@ -63,17 +63,6 @@
         app:layout_constraintTop_toBottomOf="@+id/downloadAPTextView" />
 
     <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:text="password"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
-
-    <TextView
         android:id="@+id/downloadAPTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -142,11 +131,13 @@
         android:id="@+id/runtimessidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
         android:text="runtime"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/passwordTextView"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
 
     <TextView
         android:id="@+id/statusAPTextView"
@@ -155,6 +146,7 @@
         android:layout_marginTop="10dp"
         android:text="status"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/runtimessidTextView"
         app:layout_constraintTop_toBottomOf="@+id/runtimessidTextView" />
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class loginActivity extends AppCompatActivity {
 
@@ -22,6 +23,16 @@ public class loginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+        if (isFirstRun) {
+            //show sign up activity
+            startActivity(new Intent(loginActivity.this, activationActivity.class));
+            Toast.makeText(loginActivity.this, "Run only once", Toast.LENGTH_LONG)
+                    .show();
+        }
 
         phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);

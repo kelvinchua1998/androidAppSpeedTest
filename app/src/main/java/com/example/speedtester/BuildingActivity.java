@@ -3,6 +3,7 @@ package com.example.speedtester;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class BuildingActivity extends AppCompatActivity {
     ListView BuildingListView;
     String[] buildingName;//towera
     int buildingLevelA ,buildingLevelB;
+    APData data;
     JSONObject jsonData ;
     JSONArray APlist ;
     buildingAdapter BuildingAdapter;
@@ -39,6 +41,13 @@ public class BuildingActivity extends AppCompatActivity {
     String[] config;
     int[] buildingnumAP ;
     int[] buildingLevel;//total number of levels
+    Context context = GlobalApplication.getAppContext();
+
+    ArrayList<Integer>[] warningAPindex = new ArrayList[2];
+
+    ArrayList<Integer>[] criticalAPindex = new ArrayList[2];
+
+
 
 //    Todo
 //making the building names and levels dynamic, TBC
@@ -49,6 +58,12 @@ public class BuildingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        for ( i = 0; i < warningAPindex.length ; i++) {
+            warningAPindex[i] = new ArrayList<>();
+        }
+        for ( i = 0; i < criticalAPindex.length ; i++) {
+            criticalAPindex[i] = new ArrayList<>();
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -59,11 +74,14 @@ public class BuildingActivity extends AppCompatActivity {
 
         Resources res = getResources();
         BuildingListView = (ListView) findViewById(R.id.buldingListView);
-        buildingName = res.getStringArray(R.array.building_name);
-        config = res.getStringArray(R.array.config);
-        //putting the total num of levels into an array
+
         buildingLevelA = (res.getStringArray(R.array.Main_Block)).length;
         buildingLevelB = (res.getStringArray(R.array.Podium_Block)).length;
+        buildingName = res.getStringArray(R.array.building_name);
+//        config = res.getStringArray(R.array.config);
+
+        //putting the total num of levels into an array
+
         buildingLevel = new int[]{buildingLevelA, buildingLevelB};
 
         BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP,warningList,criticalList,downloadList,uploadList);
@@ -120,6 +138,10 @@ public class BuildingActivity extends AppCompatActivity {
                     try {
                         jsonData = new JSONObject(myresponse);
                         APlist = jsonData.getJSONArray("data");
+
+                        //making it global
+                        APData.APListStrData = APlist.toString();
+
                         Log.d("response test", "string to JSON");
                         Log.d("response test", APlist.toString());
                         for (i=0; i<APlist.length();i++){
@@ -136,10 +158,16 @@ public class BuildingActivity extends AppCompatActivity {
                                     uploadList[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
 
                                     //get sum of warning and critical AP
-                                    if (singleAP.getInt("status")==1)
+                                    if (singleAP.getInt("status")==1){
+                                        warningAPindex[0].add(i);
                                         warningList[0]++;
-                                    else if (singleAP.getInt("status")==2)
+                                    }
+
+                                    else if (singleAP.getInt("status")==2){
+                                        criticalAPindex[0].add(i);
                                         criticalList[0]++;
+                                    }
+
                                 }
 
                                 else if (location.get("building").toString().equals("Podium Block"))
@@ -150,16 +178,25 @@ public class BuildingActivity extends AppCompatActivity {
                                     downloadList[1] += singleAP.getJSONObject("last_speedtest").getInt("download");
                                     uploadList[1] += singleAP.getJSONObject("last_speedtest").getInt("upload");
                                     //get sum of warning and critical AP
-                                    if (singleAP.getInt("status")==1)
+                                    if (singleAP.getInt("status")==1){
+                                        warningAPindex[1].add(i);
                                         warningList[1]++;
-                                    else if (singleAP.getInt("status")==2)
+                                    }
+
+                                    else if (singleAP.getInt("status")==2){
+                                        criticalAPindex[1].add(i);
                                         criticalList[1]++;
+                                    }
+
                                 }
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+                    data.warningAPIndex = warningAPindex;
+                    data.criticalAPIndex = criticalAPindex;
 
                     //get the mean for download and upload
                     downloadList[0] /= AnumAP;
@@ -189,4 +226,56 @@ public class BuildingActivity extends AppCompatActivity {
     }
 
 
+    public void onWarningClick(View v, int position) {
+        Intent showWarningAP = new Intent(context, ssidActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putString("from", "buildingWarning");
+
+//        int trueLevel = data.arrayIndex.get(position);
+        extras.putIntegerArrayList("com.example.speedtester.APIndex",data.warningAPIndex[position]);
+
+        extras.putString("com.example.speedtester.data", data.APListStrData);
+
+//        extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+        extras.putInt("com.example.speedtester.buildingIndex", position);
+
+        showWarningAP.putExtras(extras);
+        v.getContext().startActivity(showWarningAP);
+    }
+
+    public void onCriticalClick(View v, int position) {
+        Intent showWarningAP = new Intent(context, ssidActivity.class);
+
+        Bundle extras = new Bundle();
+        extras.putString("from", "buildingCritical");
+
+//        int trueLevel = data.arrayIndex.get(position);
+        extras.putIntegerArrayList("com.example.speedtester.APIndex",data.criticalAPIndex[position]);
+
+        extras.putString("com.example.speedtester.data", data.APListStrData);
+
+//        extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+        extras.putInt("com.example.speedtester.buildingIndex", position);
+
+        showWarningAP.putExtras(extras);
+        v.getContext().startActivity(showWarningAP);
+    }
+    public static class APData{
+//        public static ArrayList<Integer>[] indexAPEachLevel;
+        public static Context context;
+//        int[] numAPEachLevel;
+//        int[] warningEachLevel;
+//        int[] criticalEachLevel;
+//        int[] normalEachLevel;
+//        int[] uploadEachLevel;
+//        int[] downloadEachLevel;
+
+        public static ArrayList<Integer> arrayIndex;
+        public static String APListStrData;
+        public static int buildingIndex;
+        public static ArrayList[] warningAPIndex;
+        public static ArrayList[] criticalAPIndex;
+
+    }
 }

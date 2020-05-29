@@ -1,11 +1,17 @@
 package com.example.speedtester;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class TowerAdapter extends BaseAdapter {
 
@@ -28,6 +34,8 @@ public class TowerAdapter extends BaseAdapter {
         towerUpload = uploadArray;
 
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+
     }
 
     @Override
@@ -46,7 +54,7 @@ public class TowerAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = mInflater.inflate(R.layout.tower_a_levels_detail,null);
 
@@ -75,6 +83,31 @@ public class TowerAdapter extends BaseAdapter {
         criticalTextView.setText("Critical: " + critical);
         downloadTextView.setText("Download: "+ download +"Mb/s");
         uploadTextView.setText("Upload: "+ upload +"Mb/s");
+
+
+        if(warning != 0){
+
+            warningTextView.setTextColor(ContextCompat.getColor(v.getContext(), R.color.indicatorOrange));
+            warningTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TowerActivity twr = new TowerActivity();
+                    twr.onWarningClick(v,position);
+                }
+            });
+        }
+
+        if(critical != 0){
+            criticalTextView.setTextColor(ContextCompat.getColor(v.getContext(), R.color.indicatorRed));
+            criticalTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TowerActivity twr = new TowerActivity();
+                    twr.onCriticalClick(v,position);
+                }
+            });
+        }
         return v;
     }
+
 }

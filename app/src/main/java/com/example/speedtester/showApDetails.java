@@ -1,7 +1,9 @@
 package com.example.speedtester;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,6 +26,7 @@ public class showApDetails extends AppCompatActivity {
     int ping,download,upload,jitter,runtime,status,device_id,ignore,quality,timestamp;
     GraphView graphView;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +51,7 @@ public class showApDetails extends AppCompatActivity {
         ssidTextView = (TextView)findViewById(R.id.showSsidTextView);
 
 //        ipTextView = (TextView)findViewById(R.id.showIpTextView);
-        passwordTextView = (TextView)findViewById(R.id.passwordTextView);
+//        passwordTextView = (TextView)findViewById(R.id.passwordTextView);
         runtimeTextView = (TextView)findViewById(R.id.runtimessidTextView);
 //        device_idTextView = (TextView)findViewById(R.id.device_idTextView);
 //        osTextView = (TextView)findViewById(R.id.osTextView);
@@ -110,8 +113,9 @@ public class showApDetails extends AppCompatActivity {
 
         ssidTextView.setText(ssid);
 //        ipTextView.setText("ip: "+ip);
-        passwordTextView.setText("password: "+password);
-        runtimeTextView.setText("runtime: "+runtime);
+//        passwordTextView.setText("password: "+password);
+        String convertedtime = convertRuntime(runtime);
+        runtimeTextView.setText("runtime: "+ convertedtime);
 //        device_idTextView.setText("device_id: "+device_id);
 //        osTextView.setText("os: "+os);
 //        hardwareTextView.setText("hardware: "+hardware);
@@ -124,15 +128,16 @@ public class showApDetails extends AppCompatActivity {
 //        macTextView.setText("mac: "+mac);
 //        raspiTextView.setText("raspi: "+raspi);
 
-        siteTextView.setText("site: "+site);
-        buildingTextView.setText("building: "+building);
-        levelTextView.setText("level: "+level);
+        siteTextView.setText("Site: "+site);
+        buildingTextView.setText("Building: "+building);
+        levelTextView.setText("Level: "+level);
 
-        pingTextView.setText("ping: "+ping);
-        downloadTextView.setText("download: "+download);
-        uploadTextView.setText("upload: "+upload);
-        jitterTextView.setText("jitter: "+jitter);
-        timestampTextView.setText("timestamp: "+timestamp);
+        pingTextView.setText("Ping: "+ping+"ms");
+        downloadTextView.setText("Download: "+download+"Mb/s");
+        uploadTextView.setText("Upload: "+upload+"Mb/s");
+        jitterTextView.setText("Jitter: "+jitter);
+
+        timestampTextView.setText("Timestamp: "+timestamp);
 
 //        descriptionTextView.setText("description: "+description);
 
@@ -146,6 +151,17 @@ public class showApDetails extends AppCompatActivity {
         });
         graph.addSeries(series);
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static String convertRuntime(int timestamp) {
+        int days = Math.floorDiv(timestamp, 3600*24);
+        timestamp -= days * (3600*24);
+        int hours = Math.floorDiv(timestamp, 3600);
+
+        String convertedtime = days + " days " + hours +" hours";
+
+        return convertedtime;
     }
 
     private SpannableString setStatusTextView() {
@@ -177,4 +193,6 @@ public class showApDetails extends AppCompatActivity {
         }
         return null;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.speedtester;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +48,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         return new MyViewHolder(view,clickListener);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         int download=0;
@@ -63,7 +66,11 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         holder.ssidTextView.setText(ssidList.get(position));
 
         runtime = runtimeList.get(position);
-        holder.runtimeTextView.setText("runtime: "+runtime);
+
+
+        String convertedruntime = showApDetails.convertRuntime(runtime);
+
+        holder.runtimeTextView.setText("runtime: "+convertedruntime);
         holder.downloadTextView.setText("download: "+ download);
         holder.uploadTextView.setText("upload: "+ upload);
         holder.pingTextView.setText("ping: "+ ping);

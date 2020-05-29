@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activationActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    >
+
+    <ImageView
+
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/ectiviselogo"/>
+    <EditText
+        android:id="@+id/ipAddressActivationEditText"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:hint="ip Address"
+        android:layout_marginTop="30dp"/>
+
+    <EditText
+        android:id="@+id/portActivationEditText"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:hint="port"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/phoneNumbertActivationEditText"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/phone_number"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/passwordActivationEditText"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:layout_marginTop="10dp"/>
+    <Button
+        android:id="@+id/nextActivationButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/buttonshape"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="#ffffff"/>
+</LinearLayout>

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +54,7 @@ public class buildingAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         View v = mInflater.inflate(R.layout.building_listview_detail, parent,false);
 
@@ -90,6 +92,29 @@ public class buildingAdapter extends BaseAdapter {
 
         downloadTextView.setText("Download: "+ download+"Mb/s");
         uploadTextView.setText("Upload     : "+ upload+"Mb/s");
+
+        if(warningNum != 0){
+
+            warningNumberTextView.setTextColor(ContextCompat.getColor(v.getContext(), R.color.indicatorOrange));
+            warningNumberTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BuildingActivity twr = new BuildingActivity();
+                    twr.onWarningClick(v,position);
+                }
+            });
+        }
+
+        if(criticalNum != 0){
+            criticalNumberTextView.setTextColor(ContextCompat.getColor(v.getContext(), R.color.indicatorRed));
+            criticalNumberTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BuildingActivity twr = new BuildingActivity();
+                    twr.onCriticalClick(v,position);
+                }
+            });
+        }
         return v;
     }
 
