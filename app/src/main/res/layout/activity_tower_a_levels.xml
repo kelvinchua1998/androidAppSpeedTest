@@ -6,11 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".TowerActivity">
 
-    <ListView
-        android:id="@+id/towerListView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/towerRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="1dp" />
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/towerListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="1dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

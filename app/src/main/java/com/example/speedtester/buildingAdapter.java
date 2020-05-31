@@ -1,6 +1,7 @@
 package com.example.speedtester;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,10 +83,8 @@ public class buildingAdapter extends BaseAdapter {
 
         towerNameTextView.setText(Name);
 
-        if(buildingAP != null)
+
         numberSsidTextView.setText("AP: "+NumAp);
-        else
-        numberSsidTextView.setText("AP: loading");
 
         warningNumberTextView.setText("warning: "+warningNum);
         criticalNumberTextView.setText("critical: "+criticalNum);
@@ -114,6 +113,13 @@ public class buildingAdapter extends BaseAdapter {
                     twr.onCriticalClick(v,position);
                 }
             });
+        }
+        //set alternate row colours
+
+        if (position % 2 == 1) {
+            v.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        } else {
+            v.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
         }
         return v;
     }

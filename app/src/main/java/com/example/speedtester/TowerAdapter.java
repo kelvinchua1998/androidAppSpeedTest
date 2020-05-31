@@ -2,6 +2,7 @@ package com.example.speedtester;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,19 @@ public class TowerAdapter extends BaseAdapter {
 
         mInflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+
+    }
+
+    public void towerRefresh(String[] refreshTowerLevels, int[] numAPEachLevel, int[] normalEachLevel, int[] warningEachLevel, int[] criticalEachLevel, int[] downloadEachLevel, int[] uploadEachLevel) {
+        towerLevels = refreshTowerLevels;
+        towernumAP = numAPEachLevel;
+        towerWarning = warningEachLevel;
+        towerCritical  = criticalEachLevel;
+        towerNormal = normalEachLevel;
+        towerDownload = downloadEachLevel;
+        towerUpload = uploadEachLevel;
+
+        notifyDataSetChanged();
 
     }
 
@@ -83,6 +97,13 @@ public class TowerAdapter extends BaseAdapter {
         criticalTextView.setText("Critical: " + critical);
         downloadTextView.setText("Download: "+ download +"Mb/s");
         uploadTextView.setText("Upload: "+ upload +"Mb/s");
+
+        //set alternate row colour
+        if (position % 2 == 1) {
+            v.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        } else {
+            v.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+        }
 
 
         if(warning != 0){

@@ -2,11 +2,13 @@ package com.example.speedtester;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,6 +49,7 @@ public class BuildingActivity extends AppCompatActivity {
 
     ArrayList<Integer>[] criticalAPindex = new ArrayList[2];
 
+    SwipeRefreshLayout refreshLayout;
 
 
 //    Todo
@@ -58,6 +61,20 @@ public class BuildingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Loading dialogue
+
+        final LoadingDialogue loadingDialogue = new LoadingDialogue(BuildingActivity.this);
+        loadingDialogue.startLoadingDialogue();
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadingDialogue.dismissDialog();
+            }
+        },5000);
+
         for ( i = 0; i < warningAPindex.length ; i++) {
             warningAPindex[i] = new ArrayList<>();
         }
@@ -65,12 +82,13 @@ public class BuildingActivity extends AppCompatActivity {
             criticalAPindex[i] = new ArrayList<>();
         }
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setTitle("Le Grove");
 
-        connectAPI();// connect api function
+        connectAPI();
 
         Resources res = getResources();
         BuildingListView = (ListView) findViewById(R.id.buldingListView);
@@ -86,6 +104,19 @@ public class BuildingActivity extends AppCompatActivity {
 
         BuildingAdapter = new buildingAdapter(this, buildingName, buildingLevel,buildingnumAP,warningList,criticalList,downloadList,uploadList);
         BuildingListView.setAdapter(BuildingAdapter);
+
+        //swipe refresh function
+        refreshLayout = findViewById(R.id.buildingRefreshLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+
+                connectAPI();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
 
         BuildingListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -107,7 +138,15 @@ public class BuildingActivity extends AppCompatActivity {
 
     }
     private void connectAPI(){
-        boolean isTest = false;
+
+        //initialise variables
+
+        final int[] AnumAP = {0};
+        final int[] BnumAP = {0};
+        final int[] warningList = {0,0}, criticalList = {0,0};
+        final int[] downloadList = {0,0}, uploadList = {0,0};
+
+        boolean isTest = true;
         String url ;
         if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
         else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
@@ -135,6 +174,7 @@ public class BuildingActivity extends AppCompatActivity {
                     Log.d("response test", "WORKED");
                     Log.d("response test", myresponse);
 
+
                     try {
                         jsonData = new JSONObject(myresponse);
                         APlist = jsonData.getJSONArray("data");
@@ -144,7 +184,7 @@ public class BuildingActivity extends AppCompatActivity {
 
                         Log.d("response test", "string to JSON");
                         Log.d("response test", APlist.toString());
-                        for (i=0; i<APlist.length();i++){
+                        for (int i=0; i<APlist.length();i++){
                             JSONObject singleAP;
 
                                 singleAP = APlist.getJSONObject(i);
@@ -152,7 +192,7 @@ public class BuildingActivity extends AppCompatActivity {
                                 if(location.get("building").toString().equals("Main Block") )
                                 {
                                     //get total number of AP for podium
-                                    AnumAP++;
+                                    AnumAP[0]++;
                                     //get sum of download and upload for main building
                                     downloadList[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
                                     uploadList[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
@@ -173,7 +213,7 @@ public class BuildingActivity extends AppCompatActivity {
                                 else if (location.get("building").toString().equals("Podium Block"))
                                 {
                                     //get total number of AP for podium
-                                    BnumAP++;
+                                    BnumAP[0]++;
                                     //get sum of download and upload for podium building
                                     downloadList[1] += singleAP.getJSONObject("last_speedtest").getInt("download");
                                     uploadList[1] += singleAP.getJSONObject("last_speedtest").getInt("upload");
@@ -199,19 +239,19 @@ public class BuildingActivity extends AppCompatActivity {
                     data.criticalAPIndex = criticalAPindex;
 
                     //get the mean for download and upload
-                    downloadList[0] /= AnumAP;
-                    uploadList[0] /= AnumAP;
-                    downloadList[1] /= BnumAP;
-                    uploadList[1] /= BnumAP;
+                    downloadList[0] /= AnumAP[0];
+                    uploadList[0] /= AnumAP[0];
+                    downloadList[1] /= BnumAP[0];
+                    uploadList[1] /= BnumAP[0];
 
-                    Log.d("data","AnumAP: "+ AnumAP+" BnumAP: "+BnumAP);
+                    Log.d("data","AnumAP: "+ AnumAP[0] +" BnumAP: "+ BnumAP[0]);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
 
-                            buildingnumAP = new int[]{AnumAP, BnumAP};
+                            buildingnumAP = new int[]{AnumAP[0], BnumAP[0]};
 
                             Log.d("data","received" );
                             BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);

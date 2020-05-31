@@ -1,6 +1,7 @@
 package com.example.speedtester;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,22 +17,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class TowerActivity extends AppCompatActivity {
 
     ListView towerListView;
     String[] towerNames;
     String[] towerLevels;
-
+    TowerAdapter towerlevelAdapter;
     APData data;
     JSONArray APlist;
     String APListStrData;
     int buildingIndex;
     TextView warningTextView;
-    final ArrayList<Integer> arrayIndex = new ArrayList<>();
+
     Context context = GlobalApplication.getAppContext();
 
+    SwipeRefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +75,62 @@ public class TowerActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         //get the length
 
 
+        data = filterAP(towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel, data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
 
-        for (int i =0; i<data.numAPEachLevel.length; i++){
-            if (data.numAPEachLevel[i]!=0)
+
+
+
+        towerlevelAdapter = new TowerAdapter(this, data.towerLevels, data.numAPEachLevel, data.normalEachLevel, data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+        towerListView.setAdapter(towerlevelAdapter);
+
+        // Making variables global
+        data.APListStrData = APListStrData;
+
+        data.buildingIndex = buildingIndex;
+        data.context = getApplicationContext();
+
+        refreshLayout = findViewById(R.id.towerRefreshLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+
+                towerRefresh();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+
+        towerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+
+                    Bundle extras = new Bundle();
+                    extras.putString("from", "listView");
+                    extras.putString("com.example.speedtester.data", data.APListStrData);
+                    int trueLevel = data.arrayIndex.get(position);
+                    extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
+                    extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
+                    extras.putInt("com.example.speedtester.buildingIndex", data.buildingIndex);
+
+                    showSsidActivity.putExtras(extras);
+                    startActivity(showSsidActivity);
+                }
+        });
+    }
+
+    private APData filterAP(String[] TowerLevels,int[] numAPEachLevel, int[] normalEachLevel, int[] warningEachLevel, int[] criticalEachLevel, int[] downloadEachLevel, int[] uploadEachLevel) {
+
+        final ArrayList<Integer> arrayIndex = new ArrayList<>();
+
+        for (int i =0; i<numAPEachLevel.length; i++){
+            if (numAPEachLevel[i]!=0)
                 arrayIndex.add(i);
         }
 
@@ -83,42 +144,90 @@ public class TowerActivity extends AppCompatActivity {
 
         for (int i = 0; i<arrayIndex.size();i++){
 
-            filteredTowerLevels[i] =towerLevels[arrayIndex.get(i)];
-            filtnumAPEachLevel[i] = data.numAPEachLevel[arrayIndex.get(i)];
-            filtnormalEachLevel[i] = data.normalEachLevel[arrayIndex.get(i)];
-            filtwarningEachLevel[i] = data.warningEachLevel[arrayIndex.get(i)];
-            filtcriticalEachLevel[i] = data.criticalEachLevel[arrayIndex.get(i)];
-            filtdownloadEachLevel[i] = data.downloadEachLevel[arrayIndex.get(i)];
-            filtuploadEachLevel[i] = data.uploadEachLevel[arrayIndex.get(i)];
-
+            filteredTowerLevels[i] =TowerLevels[arrayIndex.get(i)];
+            filtnumAPEachLevel[i] = numAPEachLevel[arrayIndex.get(i)];
+            filtnormalEachLevel[i] = normalEachLevel[arrayIndex.get(i)];
+            filtwarningEachLevel[i] = warningEachLevel[arrayIndex.get(i)];
+            filtcriticalEachLevel[i] = criticalEachLevel[arrayIndex.get(i)];
+            filtdownloadEachLevel[i] = downloadEachLevel[arrayIndex.get(i)];
+            filtuploadEachLevel[i] = uploadEachLevel[arrayIndex.get(i)];
 
         }
-        TowerAdapter towerlevelAdapter = new TowerAdapter(this, filteredTowerLevels, filtnumAPEachLevel,filtnormalEachLevel, filtwarningEachLevel,filtcriticalEachLevel,filtdownloadEachLevel,filtuploadEachLevel);
-        towerListView.setAdapter(towerlevelAdapter);
-
-        // Making variables global
-        data.APListStrData = APListStrData;
+        data.towerLevels = filteredTowerLevels;
+        data.numAPEachLevel = filtnumAPEachLevel;
+//        data.indexAPEachLevel = indexAPEachLevel;
+        data.normalEachLevel = filtnormalEachLevel;
+        data.warningEachLevel = filtwarningEachLevel;
+        data.criticalEachLevel = filtcriticalEachLevel;
         data.arrayIndex = arrayIndex;
-        data.buildingIndex = buildingIndex;
-        data.context = getApplicationContext();
+        data.downloadEachLevel = filtdownloadEachLevel;
+        data.uploadEachLevel = filtuploadEachLevel;
 
-        towerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        return data;
+    }
 
-                    Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+    private void towerRefresh() {
 
-                    Bundle extras = new Bundle();
-                    extras.putString("from", "listView");
-                    extras.putString("com.example.speedtester.data", APListStrData);
-                    int trueLevel = arrayIndex.get(position);
-                    extras.putInt("com.example.speedtester.level", trueLevel); //pass the postion to next screen
-                    extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
-                    extras.putInt("com.example.speedtester.buildingIndex", buildingIndex);
+        boolean isTest = true;
+        String url ;
+        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
+        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
 
-                    showSsidActivity.putExtras(extras);
-                    startActivity(showSsidActivity);
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        Request request = new Request.Builder()
+                .url(url)
+                .method("POST", body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("response test", "FAILEED");
+                Log.d("response test", e.getMessage());
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myresponse = response.body().string();
+                    Log.d("response test", "WORKED");
+                    Log.d("response test", myresponse);
+
+
+                    try {
+                        JSONObject jsonData = new JSONObject(myresponse);
+                        APlist = jsonData.getJSONArray("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        data= getNumAp(buildingIndex,APlist,towerNames);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    data = filterAP(towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel, data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+
+                    // Making variables global
+                    data.APListStrData = APlist.toString();
+                    data.buildingIndex = buildingIndex;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Log.d("data","received" );
+                            towerlevelAdapter.towerRefresh(data.towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+
+                        }
+                    });
                 }
+            }
+
         });
     }
 
@@ -285,6 +394,7 @@ public class TowerActivity extends AppCompatActivity {
         int[] normalEachLevel;
         int[] uploadEachLevel;
         int[] downloadEachLevel;
+        String[] towerLevels;
 
         public static ArrayList<Integer> arrayIndex;
         public static String APListStrData;

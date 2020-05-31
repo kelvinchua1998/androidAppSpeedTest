@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ssidLayout"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="180dp"
     android:animateLayoutChanges="false"
     android:fadeScrollbars="false">
 
@@ -13,20 +13,20 @@
         android:id="@+id/pingTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="200dp"
         android:text="ping"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/runtimessidTextView" />
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/ssidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
         android:text="SSID"
-        android:textSize="30sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,40 +34,78 @@
         android:id="@+id/uploadTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="250dp"
         android:text="upload"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toTopOf="@+id/downloadTextView" />
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/downloadTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
 
     <TextView
         android:id="@+id/downloadTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
         android:text="download"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toTopOf="@+id/pingTextView" />
-
-    <TextView
-        android:id="@+id/statusAPTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="status: normal"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/ssidTextView"
-        app:layout_constraintTop_toBottomOf="@+id/ssidTextView" />
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/pingTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView11" />
 
     <TextView
         android:id="@+id/runtimessidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="runtime"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/statusAPTextView" />
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/uploadTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+    <ImageView
+        android:id="@+id/colorIndicatorImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ssidTextView"
+        app:layout_constraintEnd_toStartOf="@+id/ssidTextView"
+        app:layout_constraintTop_toTopOf="@+id/ssidTextView"
+        app:srcCompat="@drawable/green_indicator" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:text="Ping:"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ssidTextView" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Download:"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Upload:"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Uptime:"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView12"
+        app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

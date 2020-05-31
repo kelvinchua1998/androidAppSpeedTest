@@ -12,149 +12,186 @@
     android:layout_height="match_parent"
     tools:context=".showApDetails">
 
-    <TextView
-        android:id="@+id/lastSpeedtestHeader2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="speedtest:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/locationHeader"
-        app:layout_constraintTop_toBottomOf="@+id/levelAPTextView" />
-
-    <TextView
-        android:id="@+id/locationHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="location:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/statusAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/statusAPTextView" />
-
-    <TextView
-        android:id="@+id/timestampTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="timestamp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/jitterTextView"
-        app:layout_constraintTop_toBottomOf="@+id/jitterTextView" />
-
-    <TextView
-        android:id="@+id/jitterTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="jitter"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/uploadAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/uploadAPTextView" />
-
-    <TextView
-        android:id="@+id/uploadAPTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="upload"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/downloadAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/downloadAPTextView" />
-
-    <TextView
-        android:id="@+id/downloadAPTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="download"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/pingTextView"
-        app:layout_constraintTop_toBottomOf="@+id/pingTextView" />
-
-    <TextView
-        android:id="@+id/pingTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:text="ping"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/lastSpeedtestHeader2"
-        app:layout_constraintTop_toBottomOf="@+id/lastSpeedtestHeader2" />
-
-    <TextView
-        android:id="@+id/showSsidTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="30sp"
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/graph"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="ssid" />
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <TextView
-        android:id="@+id/BuildingTextView"
+        android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/showSiteTextView"
-        app:layout_constraintTop_toBottomOf="@+id/showSiteTextView"
-        tools:text="building" />
+        android:layout_marginTop="20dp"
+        android:text="Last Updated:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView9"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <TextView
-        android:id="@+id/showSiteTextView"
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Building:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/Runtime"
+        app:layout_constraintTop_toBottomOf="@+id/Runtime" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Jitter:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/Runtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/locationHeader"
-        app:layout_constraintTop_toBottomOf="@+id/locationHeader"
-        tools:text="site" />
+        android:layout_marginTop="30dp"
+        android:text="Runtime:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/levelAPTextView"
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="level"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/BuildingTextView"
-        app:layout_constraintTop_toBottomOf="@+id/BuildingTextView" />
+        android:layout_marginTop="20dp"
+        android:text="Ping:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="69dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="20dp"
+        android:text="Upload:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Download:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Level:"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/runtimessidTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="60dp"
         android:text="runtime"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/showSsidTextView" />
+        android:textSize="20sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toEndOf="@+id/Runtime"
+        app:layout_constraintTop_toTopOf="@+id/Runtime" />
 
     <TextView
-        android:id="@+id/statusAPTextView"
+        android:id="@+id/downloadAPTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="status"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:text="download"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/pingTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+    <TextView
+        android:id="@+id/timestampTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="timestamp"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/jitterTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView10" />
+
+    <TextView
+        android:id="@+id/uploadAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="upload"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/downloadAPTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/levelAPTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="level"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/BuildingTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/BuildingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/runtimessidTextView"
-        app:layout_constraintTop_toBottomOf="@+id/runtimessidTextView" />
+        app:layout_constraintTop_toTopOf="@+id/textView5"
+        tools:text="building" />
+
+    <TextView
+        android:id="@+id/jitterTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="jitter"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/uploadAPTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+    <TextView
+        android:id="@+id/pingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ping"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/levelAPTextView"
+        app:layout_constraintTop_toTopOf="@+id/textView7" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
         app:layout_constraintTop_toBottomOf="@+id/timestampTextView"
         tools:layout_editor_absoluteX="20dp" />
 

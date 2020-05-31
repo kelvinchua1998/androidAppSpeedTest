@@ -6,12 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".BuildingActivity">
 
-    <ListView
-        android:id="@+id/buldingListView"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/buildingRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/buldingListView"
+            android:layout_width="409dp"
+            android:layout_height="729dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,21 +2,32 @@ package com.example.speedtester;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LegendRenderer;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class showApDetails extends AppCompatActivity {
     JSONArray APlist;
@@ -43,12 +54,15 @@ public class showApDetails extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        ImageView divider1,divider2;
         TextView ssidTextView, ipTextView,passwordTextView, runtimeTextView, device_idTextView,osTextView, hardwareTextView, ignoreTextView;
         TextView statusTextView, qualityTextView,macTextView, raspiTextView, siteTextView,buildingTextView, levelTextView;
         TextView pingTextView, downloadTextView,uploadTextView, jitterTextView, timestampTextView,descriptionTextView;
 
-        ssidTextView = (TextView)findViewById(R.id.showSsidTextView);
+//        divider1 = (ImageView) findViewById(R.id.divider1ImageView);
+//        divider2 = (ImageView) findViewById(R.id.divider2ImageView);
+
+//        ssidTextView = (TextView)findViewById(R.id.showSsidTextView);
 
 //        ipTextView = (TextView)findViewById(R.id.showIpTextView);
 //        passwordTextView = (TextView)findViewById(R.id.passwordTextView);
@@ -57,12 +71,12 @@ public class showApDetails extends AppCompatActivity {
 //        osTextView = (TextView)findViewById(R.id.osTextView);
 //        hardwareTextView = (TextView)findViewById(R.id.hardwareTextView);
 //        ignoreTextView = (TextView)findViewById(R.id.ignoreTextView);
-        statusTextView = (TextView)findViewById(R.id.statusAPTextView);
+//        statusTextView = (TextView)findViewById(R.id.statusAPTextView);
 //        qualityTextView = (TextView)findViewById(R.id.qualityTextView);
 //        macTextView = (TextView)findViewById(R.id.macTextView);
 //        raspiTextView = (TextView)findViewById(R.id.raspiTextView);
 
-        siteTextView = (TextView)findViewById(R.id.showSiteTextView);
+//        siteTextView = (TextView)findViewById(R.id.showSiteTextView);
         buildingTextView = (TextView)findViewById(R.id.BuildingTextView);
         levelTextView = (TextView)findViewById(R.id.levelAPTextView);
 
@@ -110,34 +124,41 @@ public class showApDetails extends AppCompatActivity {
         }
 
 
-
-        ssidTextView.setText(ssid);
+        getSupportActionBar().setTitle(ssid);
+//        ssidTextView.setText(ssid);
 //        ipTextView.setText("ip: "+ip);
 //        passwordTextView.setText("password: "+password);
         String convertedtime = convertRuntime(runtime);
-        runtimeTextView.setText("runtime: "+ convertedtime);
+        runtimeTextView.setText(convertedtime);
 //        device_idTextView.setText("device_id: "+device_id);
 //        osTextView.setText("os: "+os);
 //        hardwareTextView.setText("hardware: "+hardware);
 //        ignoreTextView.setText("ignore: "+ignore);
 
-        SpannableString status = setStatusTextView();
-        statusTextView.setText(status);
+//        SpannableString status = setStatusTextView();
+//        statusTextView.setText(status);
 
 //        qualityTextView.setText("quality: "+quality);
 //        macTextView.setText("mac: "+mac);
 //        raspiTextView.setText("raspi: "+raspi);
 
-        siteTextView.setText("Site: "+site);
-        buildingTextView.setText("Building: "+building);
-        levelTextView.setText("Level: "+level);
+//        siteTextView.setText("Site: "+site);
+        buildingTextView.setText(building);
+        levelTextView.setText(level);
 
-        pingTextView.setText("Ping: "+ping+"ms");
-        downloadTextView.setText("Download: "+download+"Mb/s");
-        uploadTextView.setText("Upload: "+upload+"Mb/s");
-        jitterTextView.setText("Jitter: "+jitter);
+        pingTextView.setText(ping+"ms");
+        downloadTextView.setText(download+"Mb/s");
+        uploadTextView.setText(upload+"Mb/s");
+        jitterTextView.setText(jitter+"");
 
-        timestampTextView.setText("Timestamp: "+timestamp);
+        Timestamp ts=new Timestamp(timestamp);
+        Date date = ts;
+        timestampTextView.setText(date.toString());
+
+        Drawable mDivider = ContextCompat.getDrawable(this, R.drawable.divider);
+//        divider1.setImageDrawable(mDivider);
+//        divider2.setImageDrawable(mDivider);
+
 
 //        descriptionTextView.setText("description: "+description);
 
@@ -149,6 +170,19 @@ public class showApDetails extends AppCompatActivity {
                 new DataPoint(3, 2),
                 new DataPoint(4, 6)
         });
+        graph.setTitle("Download speed");
+        graph.setTitleTextSize(50);
+//        graph.getLegendRenderer().setVisible(true);
+
+        GridLabelRenderer gridLabelRenderer = graph.getGridLabelRenderer();
+        gridLabelRenderer.setVerticalAxisTitle("Download speed / Mb/s");
+        gridLabelRenderer.setHorizontalAxisTitle("time / hr");
+
+//        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+//        staticLabelsFormatter.setHorizontalLabels(new String[] {"old", "middle", "new"});
+//        staticLabelsFormatter.setVerticalLabels(new String[] {"low", "middle", "high"});
+//        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
         graph.addSeries(series);
 
     }
