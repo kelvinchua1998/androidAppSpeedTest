@@ -5,11 +5,13 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,20 +20,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ssidActivity extends AppCompatActivity implements ssidAdapter.RecyclerViewClickListener {
     RecyclerView ssidRecyclerView;
 
     String APListStrData;
     int levelIndex;
-    ArrayList<Integer> APIndex;
+    ArrayList<Integer> deviceIDIndex;
     JSONArray APlist;
     String[] towerNames;
     String[] levelNames;
     int buildingIndex;
     ssidData data;
     String from;
+    SwipeRefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +56,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         from = extras.getString("from");
         levelIndex = extras.getInt("com.example.speedtester.level", -1);
         APListStrData = extras.getString("com.example.speedtester.data");
-        APIndex = extras.getIntegerArrayList("com.example.speedtester.APIndex");
+//        APIndex = extras.getIntegerArrayList("com.example.speedtester.APIndex");
         buildingIndex = extras.getInt("com.example.speedtester.buildingIndex", -1);
 
         // parse data into APlist
@@ -73,7 +85,9 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
         //get ap index for the level and the ap list for the level
 
-        data = getData(APIndex, APlist,from,buildingIndex);
+        deviceIDIndex = getDeviceIDIndex(APlist,buildingIndex,levelIndex,towerNames);
+
+        data = getData(deviceIDIndex, APlist,from,buildingIndex);
 
 
         ssidRecyclerView = (RecyclerView) findViewById(R.id.ssidRecyclerView);
@@ -88,20 +102,122 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         DividerItemDecoration vItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         // Set the drawable on it
         vItemDecoration.setDrawable(mDivider);
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.ssidRefreshLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ssidRefresh();
+            }
+        });
+    }
+
+    private void ssidRefresh() {
+
+        boolean isTest = false;
+        String url ;
+        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
+        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        Request request = new Request.Builder()
+                .url(url)
+                .method("POST", body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("response test", "FAILEED");
+                Log.d("response test", e.getMessage());
+                e.printStackTrace();
+                refreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myresponse = response.body().string();
+                    Log.d("response test", "WORKED");
+                    Log.d("response test", myresponse);
+
+
+                    try {
+                        JSONObject jsonData = new JSONObject(myresponse);
+                        APlist = jsonData.getJSONArray("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    Intent refreshSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+
+                    Bundle extras = new Bundle();
+
+                    extras.putString("from", "listView");
+                    extras.putString("com.example.speedtester.data", APlist.toString());
+                    extras.putInt("com.example.speedtester.level", levelIndex); //pass the postion to next screen
+//                    extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
+                    extras.putInt("com.example.speedtester.buildingIndex", buildingIndex);
+
+                    refreshSsidActivity.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);//remove animation
+                    finish();// end the current activity
+                    overridePendingTransition(0,0);//remove animation
+
+                    refreshSsidActivity.putExtras(extras);
+                    startActivity(refreshSsidActivity);
+
+                    refreshLayout.setRefreshing(false);
+//
+                }
+            }
+
+        });
+    }
+
+    private ArrayList<Integer> getDeviceIDIndex(JSONArray aPlist, int buildingIndex, int levelIndex, String[] towerNames) {
+        ArrayList<Integer> deviceIDIndex = new ArrayList<>();
+
+        if (levelIndex == 0)
+            levelIndex = -1;
+
+        for(int i=0; i<aPlist.length();i++){
+
+            try {
+                JSONObject singleAP = aPlist.getJSONObject(i);
+                if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getJSONObject("location").getInt("level") == levelIndex)
+                    deviceIDIndex.add(singleAP.getInt("device_id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return deviceIDIndex;
     }
 
 
-    private ssidData getData(ArrayList<Integer> APIndex, JSONArray APlist,String from,int buildingIndex){
+    private ssidData getData(ArrayList<Integer> deviceIDIndex, JSONArray APlist,String from,int buildingIndex){
         ArrayList<String> ssidList = new ArrayList<>();
         ArrayList<JSONObject> lastSpeedtest = new ArrayList<>();
         ArrayList<Integer> statusList = new ArrayList<>();
         ArrayList<Integer> runtimeList = new ArrayList<>();
-        for(int i=0; i<APIndex.size();i++){
 
-            JSONObject singleAP = null;
+        for(int i=0; i<deviceIDIndex.size();i++){
+
+            JSONObject singleAP= null;
 
             try {
-                singleAP = APlist.getJSONObject(APIndex.get(i));
+
+                for (int j = 0; j<APlist.length();j++){
+                    singleAP = APlist.getJSONObject(j);
+                    if (singleAP.getInt("device_id")==deviceIDIndex.get(i))
+                        break;
+                }
+
                 if (from.equals("listView")){
                     ssidList.add(singleAP.getString("ssid"));
                     lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
@@ -190,7 +306,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
         Bundle extras = new Bundle();
 
-        extras.putInt("com.example.speedtester.APIndex", APIndex.get(position));
+        extras.putInt("com.example.speedtester.device_id", deviceIDIndex.get(position));
         extras.putString("com.example.speedtester.data", APListStrData);
 
         showAPDetail.putExtras(extras);

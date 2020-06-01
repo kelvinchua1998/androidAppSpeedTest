@@ -114,7 +114,7 @@ public class BuildingActivity extends AppCompatActivity {
 
 
                 connectAPI();
-                refreshLayout.setRefreshing(false);
+
             }
         });
 
@@ -146,7 +146,7 @@ public class BuildingActivity extends AppCompatActivity {
         final int[] warningList = {0,0}, criticalList = {0,0};
         final int[] downloadList = {0,0}, uploadList = {0,0};
 
-        boolean isTest = true;
+        boolean isTest = false;
         String url ;
         if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
         else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
@@ -165,6 +165,7 @@ public class BuildingActivity extends AppCompatActivity {
                 Log.d("response test", "FAILEED");
                 Log.d("response test", e.getMessage());
                 e.printStackTrace();
+                refreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -255,7 +256,7 @@ public class BuildingActivity extends AppCompatActivity {
 
                             Log.d("data","received" );
                             BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);
-
+                            refreshLayout.setRefreshing(false);
                         }
                     });
 

@@ -101,7 +101,7 @@ public class TowerActivity extends AppCompatActivity {
 
 
                 towerRefresh();
-                refreshLayout.setRefreshing(false);
+
             }
         });
 
@@ -168,7 +168,7 @@ public class TowerActivity extends AppCompatActivity {
 
     private void towerRefresh() {
 
-        boolean isTest = true;
+        boolean isTest = false;
         String url ;
         if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
         else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
@@ -187,6 +187,7 @@ public class TowerActivity extends AppCompatActivity {
                 Log.d("response test", "FAILEED");
                 Log.d("response test", e.getMessage());
                 e.printStackTrace();
+                refreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -204,27 +205,40 @@ public class TowerActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    try {
-                        data= getNumAp(buildingIndex,APlist,towerNames);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    Intent refreshList = new Intent(getApplicationContext(), TowerActivity.class);
+                    Bundle extras = new Bundle();
 
-                    data = filterAP(towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel, data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+                    extras.putInt("com.example.speedtester.buildingIndex",data.buildingIndex);
+                    extras.putString("com.example.speedtester.data", String.valueOf(APlist));
 
-                    // Making variables global
-                    data.APListStrData = APlist.toString();
-                    data.buildingIndex = buildingIndex;
+                    refreshList.putExtras(extras);
+                    refreshList.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            Log.d("data","received" );
-                            towerlevelAdapter.towerRefresh(data.towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
-
-                        }
-                    });
+                    finish();// end the current activity
+                    overridePendingTransition(0,0);
+                    startActivity(refreshList);
+                    refreshLayout.setRefreshing(false);
+//                    try {
+//                        data= getNumAp(buildingIndex,APlist,towerNames);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    data = filterAP(towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel, data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+//
+//                    // Making variables global
+//                    data.APListStrData = APlist.toString();
+//                    data.buildingIndex = buildingIndex;
+//
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            Log.d("data","received" );
+//                            towerlevelAdapter.towerRefresh(data.towerLevels,data.numAPEachLevel,data.normalEachLevel,data.warningEachLevel,data.criticalEachLevel,data.downloadEachLevel,data.uploadEachLevel);
+//
+//                        }
+//                    });
                 }
             }
 

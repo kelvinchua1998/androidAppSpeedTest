@@ -95,8 +95,8 @@ public class TowerAdapter extends BaseAdapter {
 //        normalTextView.setText("Normal: "+ normal);
         warningTextView.setText("Warning: " + warning);
         criticalTextView.setText("Critical: " + critical);
-        downloadTextView.setText("Download: "+ download +"Mb/s");
-        uploadTextView.setText("Upload: "+ upload +"Mb/s");
+        downloadTextView.setText(download +" Mb/s");
+        uploadTextView.setText(upload +" Mb/s");
 
         //set alternate row colour
         if (position % 2 == 1) {

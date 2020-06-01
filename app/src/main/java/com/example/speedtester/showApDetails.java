@@ -4,7 +4,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Build;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,16 +29,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class showApDetails extends AppCompatActivity {
     JSONArray APlist;
     JSONObject singleAP;
-
+    SwipeRefreshLayout refreshLayout;
     String ssid,password,os,hardware,mac,raspi,description, site,building,level , ip;
     int ping,download,upload,jitter,runtime,status,device_id,ignore,quality,timestamp;
     GraphView graphView;
+    int deviceID;
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -45,8 +59,9 @@ public class showApDetails extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        int APIndex  = bundle.getInt("com.example.speedtester.APIndex");
+        deviceID  = bundle.getInt("com.example.speedtester.device_id");
         String APListStrData = bundle.getString("com.example.speedtester.data");
+
 
         try {
             APlist = new JSONArray(APListStrData);
@@ -91,7 +106,12 @@ public class showApDetails extends AppCompatActivity {
 
 
         try {
-            singleAP = APlist.getJSONObject(APIndex);
+            for (int j = 0; j<APlist.length();j++){
+                singleAP = APlist.getJSONObject(j);
+                if (singleAP.getInt("device_id")==deviceID)
+                    break;
+            }
+//            singleAP = APlist.getJSONObject(APIndex);
 
             ssid = singleAP.getString("ssid");
             ip = singleAP.getString("ip");
@@ -146,14 +166,14 @@ public class showApDetails extends AppCompatActivity {
         buildingTextView.setText(building);
         levelTextView.setText(level);
 
-        pingTextView.setText(ping+"ms");
-        downloadTextView.setText(download+"Mb/s");
-        uploadTextView.setText(upload+"Mb/s");
+        pingTextView.setText(ping+" ms");
+        downloadTextView.setText(download+" Mb/s");
+        uploadTextView.setText(upload+" Mb/s");
         jitterTextView.setText(jitter+"");
 
         Timestamp ts=new Timestamp(timestamp);
         Date date = ts;
-        timestampTextView.setText(date.toString());
+        timestampTextView.setText(date.toString().substring(0,19));
 
         Drawable mDivider = ContextCompat.getDrawable(this, R.drawable.divider);
 //        divider1.setImageDrawable(mDivider);
@@ -185,6 +205,76 @@ public class showApDetails extends AppCompatActivity {
 //        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
         graph.addSeries(series);
 
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.showAPRefreshLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                APRefresh();
+            }
+        });
+
+    }
+
+    private void APRefresh() {
+        boolean isTest = false;
+        String url ;
+        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
+        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        Request request = new Request.Builder()
+                .url(url)
+                .method("POST", body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("response test", "FAILEED");
+                Log.d("response test", e.getMessage());
+                e.printStackTrace();
+                refreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myresponse = response.body().string();
+                    Log.d("response test", "WORKED");
+                    Log.d("response test", myresponse);
+
+
+                    try {
+                        JSONObject jsonData = new JSONObject(myresponse);
+                        APlist = jsonData.getJSONArray("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent refreshAPDetail = new Intent(getApplicationContext(),showApDetails.class);
+
+                    Bundle extras = new Bundle();
+
+                    extras.putInt("com.example.speedtester.device_id", device_id);
+                    extras.putString("com.example.speedtester.data", APlist.toString());
+
+                    refreshAPDetail.putExtras(extras);
+
+                    refreshAPDetail.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);//remove animation
+                    finish();// end the current activity
+                    overridePendingTransition(0,0);//remove animation
+
+                    startActivity(refreshAPDetail);
+
+                    refreshLayout.setRefreshing(false);
+//
+                }
+            }
+
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -227,6 +317,5 @@ public class showApDetails extends AppCompatActivity {
         }
         return null;
     }
-
 
 }

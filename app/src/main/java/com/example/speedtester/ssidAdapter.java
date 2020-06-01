@@ -41,6 +41,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         this.clickListener = listener;
 
     }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -165,6 +166,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
             clickListener.onClick(getAdapterPosition());
         }
     }
+
 
     public interface RecyclerViewClickListener{
         void onClick(int position);

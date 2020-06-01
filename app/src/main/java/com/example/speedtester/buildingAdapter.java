@@ -86,11 +86,11 @@ public class buildingAdapter extends BaseAdapter {
 
         numberSsidTextView.setText("AP: "+NumAp);
 
-        warningNumberTextView.setText("warning: "+warningNum);
-        criticalNumberTextView.setText("critical: "+criticalNum);
+        warningNumberTextView.setText("Warning: "+warningNum);
+        criticalNumberTextView.setText("Critical: "+criticalNum);
 
-        downloadTextView.setText("Download: "+ download+"Mb/s");
-        uploadTextView.setText("Upload     : "+ upload+"Mb/s");
+        downloadTextView.setText(download+" Mb/s");
+        uploadTextView.setText(upload+" Mb/s");
 
         if(warningNum != 0){
 
