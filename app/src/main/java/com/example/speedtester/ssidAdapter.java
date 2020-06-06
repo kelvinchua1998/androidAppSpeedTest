@@ -68,12 +68,12 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
 
         holder.ssidTextView.setText(ssidList.get(position));
 
-        runtime = runtimeList.get(position);
+//        runtime = runtimeList.get(position);
 
 
-        String convertedruntime = showApDetails.convertRuntime(runtime);
+//        String convertedruntime = showApDetails.convertRuntime(runtime);
 
-        holder.runtimeTextView.setText(convertedruntime);
+//        holder.runtimeTextView.setText(convertedruntime);
 
         holder.downloadTextView.setText(download+" Mb/s");
         holder.uploadTextView.setText(upload+" Mb/s");

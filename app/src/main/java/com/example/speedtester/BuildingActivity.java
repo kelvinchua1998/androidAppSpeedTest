@@ -1,6 +1,7 @@
 package com.example.speedtester;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -10,6 +11,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -40,7 +44,7 @@ public class BuildingActivity extends AppCompatActivity {
     int i,AnumAP =0 , BnumAP=0;
     int[] warningList = {0,0}, criticalList = {0,0};
     int[] downloadList = {0,0}, uploadList = {0,0};
-    String[] config;
+//    String[] config;
     int[] buildingnumAP ;
     int[] buildingLevel;//total number of levels
     Context context = GlobalApplication.getAppContext();
@@ -51,29 +55,125 @@ public class BuildingActivity extends AppCompatActivity {
 
     SwipeRefreshLayout refreshLayout;
 
+    GlobalApplication.Config config = GlobalApplication.getconfiq();
 
-//    Todo
-//making the building names and levels dynamic, TBC
-//     1) warning number
-//
-//    2) critical number
+    final LoadingDialogue loadingDialogue = new LoadingDialogue(BuildingActivity.this);
+    GlobalApplication.UserDetails user = GlobalApplication.getuserdetails();
 
+    GlobalApplication.Data shareddata = GlobalApplication.getData();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_layout,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.refreshmenu:
+
+                return true;
+            case R.id.logoutmenu:
+                logout();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    private void logout() {
+
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("mobile",user.phonenumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
+        Request request = new Request.Builder()
+                .url(config.logouturl)
+                .method("POST", body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("response test", "FAILEED");
+                Log.d("response test", e.getMessage());
+
+                e.printStackTrace();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myresponse = response.body().string();
+                    Log.d("response test", "WORKED");
+                    Log.d("response test", myresponse);
+
+                    JSONObject jsonresponse;
+                    try {
+                        jsonresponse = new JSONObject(myresponse);
+                        if(jsonresponse.getInt("errorCode") == 0){
+                            Intent logioutSuccessful = new Intent(BuildingActivity.this, loginActivity.class);
+
+                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isLogged", false).apply();
+
+                            startActivity(logioutSuccessful);
+                            finish();
+
+
+                        }
+                        else if(jsonresponse.getInt("errorCode") == 1){
+                            Intent logioutunsuccessful = new Intent(BuildingActivity.this, loginActivity.class);
+
+                            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean("isLogged", false).apply();
+
+                            startActivity(logioutunsuccessful);// user not logged in
+                            finish();
+
+
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+                }
+            }
+
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //Loading dialogue
 
-        final LoadingDialogue loadingDialogue = new LoadingDialogue(BuildingActivity.this);
         loadingDialogue.startLoadingDialogue();
-        Handler handler = new Handler();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                loadingDialogue.dismissDialog();
-            }
-        },5000);
+//        Handler handler = new Handler();
+//
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                loadingDialogue.dismissDialog();
+//            }
+//        },5000);
 
         for ( i = 0; i < warningAPindex.length ; i++) {
             warningAPindex[i] = new ArrayList<>();
@@ -137,6 +237,16 @@ public class BuildingActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        if(data.APListStrData != null){
+            if(!data.APListStrData.equals(shareddata.APlist))
+                recreate();
+        }
+        super.onResume();
+    }
+
     private void connectAPI(){
 
         //initialise variables
@@ -146,16 +256,21 @@ public class BuildingActivity extends AppCompatActivity {
         final int[] warningList = {0,0}, criticalList = {0,0};
         final int[] downloadList = {0,0}, uploadList = {0,0};
 
-        boolean isTest = false;
-        String url ;
-        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
-        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("token", config.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
         Request request = new Request.Builder()
-                .url(url)
+                .url(config.getAPlisturl)
                 .method("POST", body)
                 .build();
 
@@ -166,6 +281,7 @@ public class BuildingActivity extends AppCompatActivity {
                 Log.d("response test", e.getMessage());
                 e.printStackTrace();
                 refreshLayout.setRefreshing(false);
+                loadingDialogue.dismissDialog();
             }
 
             @Override
@@ -183,8 +299,13 @@ public class BuildingActivity extends AppCompatActivity {
                         //making it global
                         APData.APListStrData = APlist.toString();
 
+                        shareddata.APlist = APlist.toString();
+
                         Log.d("response test", "string to JSON");
                         Log.d("response test", APlist.toString());
+
+
+
                         for (int i=0; i<APlist.length();i++){
                             JSONObject singleAP;
 
@@ -253,7 +374,7 @@ public class BuildingActivity extends AppCompatActivity {
 
 
                             buildingnumAP = new int[]{AnumAP[0], BnumAP[0]};
-
+                            loadingDialogue.dismissDialog();
                             Log.d("data","received" );
                             BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);
                             refreshLayout.setRefreshing(false);

@@ -45,11 +45,12 @@ public class showApDetails extends AppCompatActivity {
     JSONArray APlist;
     JSONObject singleAP;
     SwipeRefreshLayout refreshLayout;
-    String ssid,password,os,hardware,mac,raspi,description, site,building,level , ip;
+    String ssid,password,os,hardware,mac,raspi,description, site,building,level , ip, name;
     int ping,download,upload,jitter,runtime,status,device_id,ignore,quality,timestamp;
     GraphView graphView;
     int deviceID;
-
+    GlobalApplication.Config config = GlobalApplication.getconfiq();
+    GlobalApplication.Data shareddata = GlobalApplication.getData();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -112,17 +113,17 @@ public class showApDetails extends AppCompatActivity {
                     break;
             }
 //            singleAP = APlist.getJSONObject(APIndex);
+            name = singleAP.getString("name");
+//            ssid = singleAP.getString("ssid");
+//            ip = singleAP.getString("ip");
+//            password = singleAP.getString("password");
+//            hardware = singleAP.getString("hardware");
+//            mac = singleAP.getString("mac");
+//            raspi = singleAP.getString("raspi");
+//            description = singleAP.getString("desc");
+//            os = singleAP.getString("os");
 
-            ssid = singleAP.getString("ssid");
-            ip = singleAP.getString("ip");
-            password = singleAP.getString("password");
-            hardware = singleAP.getString("hardware");
-            mac = singleAP.getString("mac");
-            raspi = singleAP.getString("raspi");
-            description = singleAP.getString("desc");
-            os = singleAP.getString("os");
-
-            site = singleAP.getJSONObject("location").getString("site");
+//            site = singleAP.getJSONObject("location").getString("site");
             building = singleAP.getJSONObject("location").getString("building");
             level = singleAP.getJSONObject("location").getString("level");
 
@@ -132,11 +133,11 @@ public class showApDetails extends AppCompatActivity {
             jitter = singleAP.getJSONObject("last_speedtest").getInt("jitter");
             timestamp = singleAP.getJSONObject("last_speedtest").getInt("timestamp");
 
-            ignore = singleAP.getInt("ignore");
+//            ignore = singleAP.getInt("ignore");
             status = singleAP.getInt("status");
-            quality = singleAP.getInt("quality");
-            runtime = singleAP.getInt("runtime");
-            device_id = singleAP.getInt("device_id");
+//            quality = singleAP.getInt("quality");
+//            runtime = singleAP.getInt("runtime");
+//            device_id = singleAP.getInt("device_id");
 
 
         } catch (JSONException e) {
@@ -144,7 +145,7 @@ public class showApDetails extends AppCompatActivity {
         }
 
 
-        getSupportActionBar().setTitle(ssid);
+        getSupportActionBar().setTitle(name);
 //        ssidTextView.setText(ssid);
 //        ipTextView.setText("ip: "+ip);
 //        passwordTextView.setText("password: "+password);
@@ -164,12 +165,15 @@ public class showApDetails extends AppCompatActivity {
 
 //        siteTextView.setText("Site: "+site);
         buildingTextView.setText(building);
-        levelTextView.setText(level);
+        if(Integer.valueOf(level) == -1)
+            levelTextView.setText("B1");
+        else
+            levelTextView.setText(level);
 
         pingTextView.setText(ping+" ms");
         downloadTextView.setText(download+" Mb/s");
         uploadTextView.setText(upload+" Mb/s");
-        jitterTextView.setText(jitter+"");
+        jitterTextView.setText(jitter+" ms");
 
         Timestamp ts=new Timestamp(timestamp);
         Date date = ts;
@@ -217,16 +221,21 @@ public class showApDetails extends AppCompatActivity {
     }
 
     private void APRefresh() {
-        boolean isTest = false;
-        String url ;
-        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
-        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("token", config.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
         Request request = new Request.Builder()
-                .url(url)
+                .url(config.getAPlisturl)
                 .method("POST", body)
                 .build();
 
@@ -253,6 +262,8 @@ public class showApDetails extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+                    shareddata.APlist = APlist.toString();
 
                     Intent refreshAPDetail = new Intent(getApplicationContext(),showApDetails.class);
 

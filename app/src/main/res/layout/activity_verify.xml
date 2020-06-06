@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:cursorVisible="true"
         android:hint=""
-        android:inputType="text"
+        android:inputType="number"
         android:layout_marginTop="100dp"
         android:textColor="@color/colorPrimary"
 
@@ -33,7 +33,7 @@
 
         app:cursorWidth="2dp"
         app:hideLineWhenFilled="false"
-        app:itemCount="5"
+        app:itemCount="6"
         app:itemHeight="48dp"
         app:itemRadius="8dp"
         app:itemSpacing="20dp"
@@ -41,6 +41,13 @@
         app:lineColor="@color/colorPrimary"
         app:lineWidth="2dp"
         app:viewType="rectangle" />
+
+    <TextView
+        android:id="@+id/otpvalidatorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/indicatorRed"/>
+
     <Button
         android:id="@+id/verifyButton"
         android:layout_width="160dp"

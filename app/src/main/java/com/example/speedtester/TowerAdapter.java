@@ -91,10 +91,10 @@ public class TowerAdapter extends BaseAdapter {
 
         towerLevelname.setText(level);
 
-        numAPTextView.setText("Total: " + AP);
+        numAPTextView.setText("Total:      " + AP);
 //        normalTextView.setText("Normal: "+ normal);
         warningTextView.setText("Warning: " + warning);
-        criticalTextView.setText("Critical: " + critical);
+        criticalTextView.setText("Critical:   " + critical);
         downloadTextView.setText(download +" Mb/s");
         uploadTextView.setText(upload +" Mb/s");
 

@@ -17,10 +17,13 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activationActivity"></activity>
         <activity android:name=".homePageActivity"></activity>
-        <activity android:name=".verifyActivity" />
-        <activity android:name=".phoneOTPactivity" />
+        <activity android:name=".verifyActivity"
+            android:noHistory="true"/>
+        <activity android:name=".phoneOTPactivity"
+            android:noHistory="true"/>
         <activity android:name=".registerActivity" />
-        <activity android:name=".loginActivity">
+        <activity android:name=".loginActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

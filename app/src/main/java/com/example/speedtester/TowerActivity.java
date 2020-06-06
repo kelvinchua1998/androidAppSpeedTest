@@ -39,8 +39,9 @@ public class TowerActivity extends AppCompatActivity {
     String APListStrData;
     int buildingIndex;
     TextView warningTextView;
-
+    GlobalApplication.Config config = GlobalApplication.getconfiq();
     Context context = GlobalApplication.getAppContext();
+    GlobalApplication.Data shareddata = GlobalApplication.getData();
 
     SwipeRefreshLayout refreshLayout;
     @Override
@@ -125,6 +126,15 @@ public class TowerActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        GlobalApplication.Data apdata = GlobalApplication.getData();
+        String shareAPlist = apdata.APlist;
+        if(!data.APListStrData.equals(shareAPlist))
+            recreate();
+        super.onResume();
+    }
+
     private APData filterAP(String[] TowerLevels,int[] numAPEachLevel, int[] normalEachLevel, int[] warningEachLevel, int[] criticalEachLevel, int[] downloadEachLevel, int[] uploadEachLevel) {
 
         final ArrayList<Integer> arrayIndex = new ArrayList<>();
@@ -168,16 +178,22 @@ public class TowerActivity extends AppCompatActivity {
 
     private void towerRefresh() {
 
-        boolean isTest = false;
-        String url ;
-        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
-        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("token", config.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
         Request request = new Request.Builder()
-                .url(url)
+                .url(config.getAPlisturl)
                 .method("POST", body)
                 .build();
 
@@ -205,6 +221,7 @@ public class TowerActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                    shareddata.APlist = APlist.toString();
                     Intent refreshList = new Intent(getApplicationContext(), TowerActivity.class);
                     Bundle extras = new Bundle();
 
@@ -216,7 +233,7 @@ public class TowerActivity extends AppCompatActivity {
 
                     finish();// end the current activity
                     overridePendingTransition(0,0);
-                    startActivity(refreshList);
+                    startActivity(refreshList);//start the activity again
                     refreshLayout.setRefreshing(false);
 //                    try {
 //                        data= getNumAp(buildingIndex,APlist,towerNames);

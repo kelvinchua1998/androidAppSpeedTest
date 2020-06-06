@@ -44,6 +44,9 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
     ssidData data;
     String from;
     SwipeRefreshLayout refreshLayout;
+    GlobalApplication.Config config = GlobalApplication.getconfiq();
+    GlobalApplication.Data shareddata = GlobalApplication.getData();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +90,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
         deviceIDIndex = getDeviceIDIndex(APlist,buildingIndex,levelIndex,towerNames);
 
-        data = getData(deviceIDIndex, APlist,from,buildingIndex);
+        data = getData(deviceIDIndex, APlist);
 
 
         ssidRecyclerView = (RecyclerView) findViewById(R.id.ssidRecyclerView);
@@ -113,18 +116,31 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         });
     }
 
+    @Override
+    protected void onResume() {
+        GlobalApplication.Data apdata = GlobalApplication.getData();
+        String shareAPlist = apdata.APlist;
+        if(!APListStrData.equals(shareAPlist))
+            recreate();
+        super.onResume();
+    }
+
     private void ssidRefresh() {
 
-        boolean isTest = false;
-        String url ;
-        if(isTest) url = "http://192.168.1.124:8081/api/speedtest/getaplist";
-        else  url = "http://dev1.ectivisecloud.com:8081/api/speedtest/getaplist";
-
         OkHttpClient client = new OkHttpClient().newBuilder().build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "token=ectivisecloudDBAuthCode:b84846daf467cede0ee462d04bcd0ade");
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("token", config.token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
         Request request = new Request.Builder()
-                .url(url)
+                .url(config.getAPlisturl)
                 .method("POST", body)
                 .build();
 
@@ -152,13 +168,13 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
                         e.printStackTrace();
                     }
 
-
+                    shareddata.APlist = APlist.toString();
 
                     Intent refreshSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
 
                     Bundle extras = new Bundle();
 
-                    extras.putString("from", "listView");
+                    extras.putString("from", from);
                     extras.putString("com.example.speedtester.data", APlist.toString());
                     extras.putInt("com.example.speedtester.level", levelIndex); //pass the postion to next screen
 //                    extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
@@ -188,9 +204,32 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         for(int i=0; i<aPlist.length();i++){
 
             try {
-                JSONObject singleAP = aPlist.getJSONObject(i);
-                if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getJSONObject("location").getInt("level") == levelIndex)
-                    deviceIDIndex.add(singleAP.getInt("device_id"));
+                if(from.equals("listView")){
+                    JSONObject singleAP = aPlist.getJSONObject(i);
+                    if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getJSONObject("location").getInt("level") == levelIndex)
+                        deviceIDIndex.add(singleAP.getInt("device_id"));
+                }
+                else if(from.equals("warning")){
+                    JSONObject singleAP = aPlist.getJSONObject(i);
+                    if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getJSONObject("location").getInt("level") == levelIndex && singleAP.getInt("status")== 1)
+                        deviceIDIndex.add(singleAP.getInt("device_id"));
+                }
+                else if(from.equals("critical")){
+                    JSONObject singleAP = aPlist.getJSONObject(i);
+                    if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getJSONObject("location").getInt("level") == levelIndex && singleAP.getInt("status")== 2)
+                        deviceIDIndex.add(singleAP.getInt("device_id"));
+                }
+                else if(from.equals("buildingWarning")){
+                    JSONObject singleAP = aPlist.getJSONObject(i);
+                    if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  && singleAP.getInt("status")== 1)
+                        deviceIDIndex.add(singleAP.getInt("device_id"));
+                }
+                else if(from.equals("buildingCritical")){
+                    JSONObject singleAP = aPlist.getJSONObject(i);
+                    if( singleAP.getJSONObject("location").getString("building").equals(towerNames[buildingIndex])  &&  singleAP.getInt("status")== 2)
+                        deviceIDIndex.add(singleAP.getInt("device_id"));
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -200,7 +239,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
     }
 
 
-    private ssidData getData(ArrayList<Integer> deviceIDIndex, JSONArray APlist,String from,int buildingIndex){
+    private ssidData getData(ArrayList<Integer> deviceIDIndex, JSONArray APlist){
         ArrayList<String> ssidList = new ArrayList<>();
         ArrayList<JSONObject> lastSpeedtest = new ArrayList<>();
         ArrayList<Integer> statusList = new ArrayList<>();
@@ -218,72 +257,10 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
                         break;
                 }
 
-                if (from.equals("listView")){
-                    ssidList.add(singleAP.getString("ssid"));
-                    lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                    statusList.add(singleAP.getInt("status"));
-                    runtimeList.add(singleAP.getInt("runtime"));
-                }
-                else if (from.equals("warning")){
-                    // the AP into the data if the status is warning
-                    if (singleAP.getInt("status")==1){
-                        ssidList.add(singleAP.getString("ssid"));
-                        lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                        statusList.add(singleAP.getInt("status"));
-                        runtimeList.add(singleAP.getInt("runtime"));
-                    }
-                }
-                else if (from.equals("critical")){
-                    // the AP into the data if the status is warning
-                    if (singleAP.getInt("status")==2){
-                        ssidList.add(singleAP.getString("ssid"));
-                        lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                        statusList.add(singleAP.getInt("status"));
-                        runtimeList.add(singleAP.getInt("runtime"));
-                    }
-                }
-                else if (from.equals("buildingWarning")){
-                    // the AP into the data if the status is warning
-                    if (singleAP.getInt("status")==1){
-                        if (buildingIndex == 0){
-                            if(singleAP.getJSONObject("location").getString("building").equals("Main Block")){
-                                ssidList.add(singleAP.getString("ssid"));
-                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                                statusList.add(singleAP.getInt("status"));
-                                runtimeList.add(singleAP.getInt("runtime"));
-                            }
-                        }else if(buildingIndex == 1){
-                            if(singleAP.getJSONObject("location").getString("building").equals("Podium Block")){
-                                ssidList.add(singleAP.getString("ssid"));
-                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                                statusList.add(singleAP.getInt("status"));
-                                runtimeList.add(singleAP.getInt("runtime"));
-                            }
-                        }
-
-                    }
-                }
-                else if (from.equals("buildingCritical")){
-                    // the AP into the data if the status is warning
-                    if (singleAP.getInt("status")==2){
-                        if (buildingIndex == 0){
-                            if(singleAP.getJSONObject("location").getString("building").equals("Main Block")){
-                                ssidList.add(singleAP.getString("ssid"));
-                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                                statusList.add(singleAP.getInt("status"));
-                                runtimeList.add(singleAP.getInt("runtime"));
-                            }
-                        }else if(buildingIndex == 1){
-                            if(singleAP.getJSONObject("location").getString("building").equals("Podium Block")){
-                                ssidList.add(singleAP.getString("ssid"));
-                                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
-                                statusList.add(singleAP.getInt("status"));
-                                runtimeList.add(singleAP.getInt("runtime"));
-                            }
-                        }
-
-                    }
-                }
+                ssidList.add(singleAP.getString("name"));
+                lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
+                statusList.add(singleAP.getInt("status"));
+                runtimeList.add(singleAP.getInt("runtime"));
 
             }
             catch (JSONException e) {
