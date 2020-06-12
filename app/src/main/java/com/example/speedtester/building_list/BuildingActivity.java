@@ -1,4 +1,4 @@
-package com.example.speedtester;
+package com.example.speedtester.building_list;
 
 
 import androidx.annotation.NonNull;
@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.example.speedtester.GlobalApplication;
+import com.example.speedtester.LoadingDialogue;
+import com.example.speedtester.R;
+import com.example.speedtester.level_list.TowerActivity;
+import com.example.speedtester.login.loginActivity;
+import com.example.speedtester.ssid_list.ssidActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -211,8 +217,6 @@ public class BuildingActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
-
                 connectAPI();
 
             }
@@ -241,6 +245,7 @@ public class BuildingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         if(data.APListStrData != null){
+            GlobalApplication.Data shareddata = GlobalApplication.getData();
             if(!data.APListStrData.equals(shareddata.APlist))
                 recreate();
         }
@@ -291,9 +296,9 @@ public class BuildingActivity extends AppCompatActivity {
                     Log.d("response test", "WORKED");
                     Log.d("response test", myresponse);
 
-
                     try {
                         jsonData = new JSONObject(myresponse);
+
                         APlist = jsonData.getJSONArray("data");
 
                         //making it global
@@ -304,82 +309,84 @@ public class BuildingActivity extends AppCompatActivity {
                         Log.d("response test", "string to JSON");
                         Log.d("response test", APlist.toString());
 
-
-
                         for (int i=0; i<APlist.length();i++){
                             JSONObject singleAP;
 
-                                singleAP = APlist.getJSONObject(i);
-                                JSONObject location = singleAP.getJSONObject("location");
-                                if(location.get("building").toString().equals("Main Block") )
-                                {
-                                    //get total number of AP for podium
-                                    AnumAP[0]++;
-                                    //get sum of download and upload for main building
-                                    downloadList[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
-                                    uploadList[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
+                            singleAP = APlist.getJSONObject(i);
+                            JSONObject location = singleAP.getJSONObject("location");
+                            if(location.get("building").toString().equals("Main Block") )
+                            {
+                                //get total number of AP for podium
+                                AnumAP[0]++;
+                                //get sum of download and upload for main building
+                                downloadList[0] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                                uploadList[0] += singleAP.getJSONObject("last_speedtest").getInt("upload");
 
-                                    //get sum of warning and critical AP
-                                    if (singleAP.getInt("status")==1){
-                                        warningAPindex[0].add(i);
-                                        warningList[0]++;
-                                    }
-
-                                    else if (singleAP.getInt("status")==2){
-                                        criticalAPindex[0].add(i);
-                                        criticalList[0]++;
-                                    }
-
+                                //get sum of warning and critical AP
+                                if (singleAP.getInt("status")==1){
+                                    warningAPindex[0].add(i);
+                                    warningList[0]++;
                                 }
 
-                                else if (location.get("building").toString().equals("Podium Block"))
-                                {
-                                    //get total number of AP for podium
-                                    BnumAP[0]++;
-                                    //get sum of download and upload for podium building
-                                    downloadList[1] += singleAP.getJSONObject("last_speedtest").getInt("download");
-                                    uploadList[1] += singleAP.getJSONObject("last_speedtest").getInt("upload");
-                                    //get sum of warning and critical AP
-                                    if (singleAP.getInt("status")==1){
-                                        warningAPindex[1].add(i);
-                                        warningList[1]++;
-                                    }
-
-                                    else if (singleAP.getInt("status")==2){
-                                        criticalAPindex[1].add(i);
-                                        criticalList[1]++;
-                                    }
-
+                                else if (singleAP.getInt("status")==2){
+                                    criticalAPindex[0].add(i);
+                                    criticalList[0]++;
                                 }
+
+                            }
+
+                            else if (location.get("building").toString().equals("Podium Block"))
+                            {
+                                //get total number of AP for podium
+                                BnumAP[0]++;
+                                //get sum of download and upload for podium building
+                                downloadList[1] += singleAP.getJSONObject("last_speedtest").getInt("download");
+                                uploadList[1] += singleAP.getJSONObject("last_speedtest").getInt("upload");
+                                //get sum of warning and critical AP
+                                if (singleAP.getInt("status")==1){
+                                    warningAPindex[1].add(i);
+                                    warningList[1]++;
+                                }
+
+                                else if (singleAP.getInt("status")==2){
+                                    criticalAPindex[1].add(i);
+                                    criticalList[1]++;
+                                }
+
+                            }
                         }
 
+
+                        data.warningAPIndex = warningAPindex;
+                        data.criticalAPIndex = criticalAPindex;
+
+                        //get the mean for download and upload
+                        downloadList[0] /= AnumAP[0];
+                        uploadList[0] /= AnumAP[0];
+                        downloadList[1] /= BnumAP[0];
+                        uploadList[1] /= BnumAP[0];
+
+                        Log.d("data","AnumAP: "+ AnumAP[0] +" BnumAP: "+ BnumAP[0]);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+
+                                buildingnumAP = new int[]{AnumAP[0], BnumAP[0]};
+                                loadingDialogue.dismissDialog();
+                                Log.d("data","received" );
+
+                                BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);
+                                refreshLayout.setRefreshing(false);
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    data.warningAPIndex = warningAPindex;
-                    data.criticalAPIndex = criticalAPindex;
-
-                    //get the mean for download and upload
-                    downloadList[0] /= AnumAP[0];
-                    uploadList[0] /= AnumAP[0];
-                    downloadList[1] /= BnumAP[0];
-                    uploadList[1] /= BnumAP[0];
-
-                    Log.d("data","AnumAP: "+ AnumAP[0] +" BnumAP: "+ BnumAP[0]);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
 
 
-                            buildingnumAP = new int[]{AnumAP[0], BnumAP[0]};
-                            loadingDialogue.dismissDialog();
-                            Log.d("data","received" );
-                            BuildingAdapter.setbuildingAP(buildingnumAP, warningList, criticalList, downloadList, uploadList);
-                            refreshLayout.setRefreshing(false);
-                        }
-                    });
 
                 }
             }

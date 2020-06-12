@@ -3,12 +3,11 @@ package com.example.speedtester;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -20,8 +19,7 @@ import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -30,7 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import okhttp3.Call;
@@ -46,11 +45,23 @@ public class showApDetails extends AppCompatActivity {
     JSONObject singleAP;
     SwipeRefreshLayout refreshLayout;
     String ssid,password,os,hardware,mac,raspi,description, site,building,level , ip, name;
-    int ping,download,upload,jitter,runtime,status,device_id,ignore,quality,timestamp;
+    int ping;
+    int download;
+    int upload;
+    int jitter;
+    int runtime;
+    int status;
+    int device_id;
+    int ignore;
+    int quality;
+    long timestamp;
     GraphView graphView;
+    JSONArray testresultlist;
     int deviceID;
     GlobalApplication.Config config = GlobalApplication.getconfiq();
     GlobalApplication.Data shareddata = GlobalApplication.getData();
+    Context context = GlobalApplication.getAppContext();
+    Intentinglobal intentinglobal = new Intentinglobal();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -63,7 +74,7 @@ public class showApDetails extends AppCompatActivity {
         deviceID  = bundle.getInt("com.example.speedtester.device_id");
         String APListStrData = bundle.getString("com.example.speedtester.data");
 
-
+        intentinglobal.device_id = deviceID;
         try {
             APlist = new JSONArray(APListStrData);
         } catch (JSONException e) {
@@ -82,7 +93,7 @@ public class showApDetails extends AppCompatActivity {
 
 //        ipTextView = (TextView)findViewById(R.id.showIpTextView);
 //        passwordTextView = (TextView)findViewById(R.id.passwordTextView);
-        runtimeTextView = (TextView)findViewById(R.id.runtimessidTextView);
+//        runtimeTextView = (TextView)findViewById(R.id.runtimessidTextView);
 //        device_idTextView = (TextView)findViewById(R.id.device_idTextView);
 //        osTextView = (TextView)findViewById(R.id.osTextView);
 //        hardwareTextView = (TextView)findViewById(R.id.hardwareTextView);
@@ -131,7 +142,7 @@ public class showApDetails extends AppCompatActivity {
             download = singleAP.getJSONObject("last_speedtest").getInt("download");
             upload = singleAP.getJSONObject("last_speedtest").getInt("upload");
             jitter = singleAP.getJSONObject("last_speedtest").getInt("jitter");
-            timestamp = singleAP.getJSONObject("last_speedtest").getInt("timestamp");
+            timestamp = singleAP.getJSONObject("last_speedtest").getLong("timestamp");
 
 //            ignore = singleAP.getInt("ignore");
             status = singleAP.getInt("status");
@@ -150,7 +161,7 @@ public class showApDetails extends AppCompatActivity {
 //        ipTextView.setText("ip: "+ip);
 //        passwordTextView.setText("password: "+password);
         String convertedtime = convertRuntime(runtime);
-        runtimeTextView.setText(convertedtime);
+//        runtimeTextView.setText(convertedtime);
 //        device_idTextView.setText("device_id: "+device_id);
 //        osTextView.setText("os: "+os);
 //        hardwareTextView.setText("hardware: "+hardware);
@@ -175,9 +186,16 @@ public class showApDetails extends AppCompatActivity {
         uploadTextView.setText(upload+" Mb/s");
         jitterTextView.setText(jitter+" ms");
 
-        Timestamp ts=new Timestamp(timestamp);
-        Date date = ts;
-        timestampTextView.setText(date.toString().substring(0,19));
+//        Timestamp ts=new Timestamp(timestamp);
+//        Date date = ts;
+
+        Date date=new Date(timestamp);
+
+        String pattern = "dd-MM-yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat =
+                new SimpleDateFormat(pattern);
+//
+        timestampTextView.setText(simpleDateFormat.format(date));
 
         Drawable mDivider = ContextCompat.getDrawable(this, R.drawable.divider);
 //        divider1.setImageDrawable(mDivider);
@@ -186,28 +204,7 @@ public class showApDetails extends AppCompatActivity {
 
 //        descriptionTextView.setText("description: "+description);
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
-        graph.setTitle("Download speed");
-        graph.setTitleTextSize(50);
-//        graph.getLegendRenderer().setVisible(true);
-
-        GridLabelRenderer gridLabelRenderer = graph.getGridLabelRenderer();
-        gridLabelRenderer.setVerticalAxisTitle("Download speed / Mb/s");
-        gridLabelRenderer.setHorizontalAxisTitle("time / hr");
-
-//        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-//        staticLabelsFormatter.setHorizontalLabels(new String[] {"old", "middle", "new"});
-//        staticLabelsFormatter.setVerticalLabels(new String[] {"low", "middle", "high"});
-//        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
-        graph.addSeries(series);
+        gettestresultlist(name);
 
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.showAPRefreshLayout);
 
@@ -218,6 +215,188 @@ public class showApDetails extends AppCompatActivity {
             }
         });
 
+    }
+
+    private Lastspeedtest proccessdata(JSONArray testresultlist) {
+        DataPoint[] downloadDatapoints = new DataPoint[30];
+        DataPoint[] uploadDatapoints = new DataPoint[30];
+        DataPoint[] pingDatapoints = new DataPoint[30];
+        DataPoint[] jitterDatapoints = new DataPoint[30];
+        Lastspeedtest lastspeedtest = new Lastspeedtest();
+        for (int i = 0; i<30;i++){
+
+
+            try {
+                JSONObject singletestresult = testresultlist.getJSONObject(i);
+                Date date = new Date(singletestresult.getLong("timestamp"));
+                int download = singletestresult.getInt("download");
+                int upload = singletestresult.getInt("upload");
+                int ping = singletestresult.getInt("ping");
+                int jitter = singletestresult.getInt("jitter");
+
+                downloadDatapoints[29-i]=new DataPoint(date,download);
+                uploadDatapoints[29-i]=new DataPoint(date,upload);
+                pingDatapoints[29-i]=new DataPoint(date,ping);
+                jitterDatapoints[29-i]=new DataPoint(date,jitter);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Graphparams download = new Graphparams();
+        Graphparams upload = new Graphparams();
+        Graphparams ping = new Graphparams();
+        Graphparams jitter = new Graphparams();
+
+        download.datapoints=downloadDatapoints;
+        download.title = "Download speed past 1hour";
+        download.verticalaxistitle = "Download speed /Mps";
+        download.horizontalaxistitle = "time";
+
+        upload.datapoints=uploadDatapoints;
+        upload.title = "upload speed past 1hour";
+        upload.verticalaxistitle = "upload speed /Mps";
+        upload.horizontalaxistitle = "time";
+
+        ping.datapoints=pingDatapoints;
+        ping.title = "ping past 1hour";
+        ping.verticalaxistitle = "ping /ms";
+        ping.horizontalaxistitle = "time";
+
+        jitter.datapoints=jitterDatapoints;
+        jitter.title = "jitter past 1hour";
+        jitter.verticalaxistitle = "jitter /ms";
+        jitter.horizontalaxistitle = "time";
+
+
+        lastspeedtest.downloadgraphparams =download;
+        lastspeedtest.uploadgraphparams =upload;
+        lastspeedtest.pinggraphparams =ping;
+        lastspeedtest.jittergraphparams =jitter;
+
+        return lastspeedtest;
+    }
+
+    private void gettestresultlist(String name) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+        JSONObject bodyoptions = new JSONObject();
+
+        try {
+            bodyoptions.put("token", config.token);
+            bodyoptions.put("name", name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String options = bodyoptions.toString();
+        RequestBody body = RequestBody.create(mediaType, options);
+        Request request = new Request.Builder()
+                .url(config.gettestresult)
+                .method("POST", body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("response test", "FAILEED");
+                Log.d("response test", e.getMessage());
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    final String myresponse = response.body().string();
+                    Log.d("response test", "WORKED");
+                    Log.d("response test", myresponse);
+
+
+                    try {
+                        JSONObject jsonData = new JSONObject(myresponse);
+                        testresultlist = jsonData.getJSONArray("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GraphView downloadgraph = (GraphView) findViewById(R.id.downloadgraph);
+                            GraphView uploadgraph = (GraphView) findViewById(R.id.uploadgraph);
+                            GraphView pinggraph = (GraphView) findViewById(R.id.pinggraph);
+                            GraphView jittergraph = (GraphView) findViewById(R.id.jittergraph);
+
+
+                            Lastspeedtest lastspeedtest = proccessdata(testresultlist);
+
+                            plotgraph(lastspeedtest.downloadgraphparams,downloadgraph);
+                            plotgraph(lastspeedtest.uploadgraphparams,uploadgraph);
+                            plotgraph(lastspeedtest.pinggraphparams,pinggraph);
+                            plotgraph(lastspeedtest.jittergraphparams,jittergraph);
+
+
+                        }
+                    });
+
+                }
+            }
+
+        });
+    }
+
+    private void plotgraph(Graphparams graphparams,GraphView graphView) {
+
+
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(graphparams.datapoints);
+        graphView.setTitle(graphparams.title);
+        graphView.setTitleTextSize(50);
+//        graph.getLegendRenderer().setVisible(true);
+
+        String pattern1 = "HH:mm";
+        DateFormat DateFormat = new SimpleDateFormat(pattern1);
+
+
+//                            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+// set manual x bounds to have nice steps
+        graphView.getViewport().setMinX(graphparams.datapoints[0].getX());
+        graphView.getViewport().setMaxX(graphparams.datapoints[29].getX());
+        graphView.getViewport().setXAxisBoundsManual(true);
+
+// as we use dates as labels, the human rounding to nice readable numbers
+// is not necessary
+//                            graph.getGridLabelRenderer().setHumanRounding(false);
+
+        GridLabelRenderer gridLabelRenderer = graphView.getGridLabelRenderer();
+        gridLabelRenderer.setVerticalAxisTitle(graphparams.verticalaxistitle);
+        gridLabelRenderer.setHorizontalAxisTitle(graphparams.horizontalaxistitle);
+        gridLabelRenderer.setHorizontalLabelsAngle(12);
+        gridLabelRenderer.setLabelFormatter(new DateAsXAxisLabelFormatter(context, DateFormat));
+//
+//                            String pattern1 = "HH:mm";
+//                            DateFormat DateFormat = new SimpleDateFormat(pattern1);
+//
+//        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+//        staticLabelsFormatter.setHorizontalLabels(new String[] {DateFormat.format(datapoints[0].getX()),"idk", DateFormat.format(datapoints[29].getX())});
+////        staticLabelsFormatter.setVerticalLabels(new String[] {"low", "middle", "high"});
+//        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+//        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        graphView.addSeries(series);
+
+    }
+
+    public class Lastspeedtest{
+        Graphparams downloadgraphparams;
+        Graphparams uploadgraphparams;
+        Graphparams pinggraphparams;
+        Graphparams jittergraphparams;
+    }
+
+    public class Graphparams{
+        DataPoint[] datapoints;
+        String title;
+        String horizontalaxistitle;
+        String verticalaxistitle;
     }
 
     private void APRefresh() {
@@ -269,7 +448,7 @@ public class showApDetails extends AppCompatActivity {
 
                     Bundle extras = new Bundle();
 
-                    extras.putInt("com.example.speedtester.device_id", device_id);
+                    extras.putInt("com.example.speedtester.device_id", intentinglobal.device_id);
                     extras.putString("com.example.speedtester.data", APlist.toString());
 
                     refreshAPDetail.putExtras(extras);
@@ -327,6 +506,10 @@ public class showApDetails extends AppCompatActivity {
             return ss;
         }
         return null;
+    }
+
+    public class Intentinglobal{
+        int device_id;
     }
 
 }

@@ -1,5 +1,6 @@
-package com.example.speedtester;
+package com.example.speedtester.ssid_list;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -10,18 +11,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+
+import com.example.speedtester.GlobalApplication;
+import com.example.speedtester.R;
+import com.example.speedtester.showApDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,6 +53,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
     GlobalApplication.Config config = GlobalApplication.getconfiq();
     GlobalApplication.Data shareddata = GlobalApplication.getData();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +105,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         ssidAdapter ssidAdapter = new ssidAdapter(this, data.ssidList, data.lastSpeedtest, data.statusList,data.runtimeList,this);
         ssidRecyclerView.setAdapter(ssidAdapter);
         ssidRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         ssidRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         // Get drawable object
         Drawable mDivider = ContextCompat.getDrawable(this, R.drawable.divider);
@@ -118,10 +126,25 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
     @Override
     protected void onResume() {
-        GlobalApplication.Data apdata = GlobalApplication.getData();
-        String shareAPlist = apdata.APlist;
-        if(!APListStrData.equals(shareAPlist))
-            recreate();
+        GlobalApplication.Data shareddata = GlobalApplication.getData();
+
+        if(!APListStrData.equals(shareddata.APlist)){
+            Intent showSsidActivity = new Intent(getApplicationContext(), ssidActivity.class);
+
+            Bundle extras = new Bundle();
+            extras.putString("from", "listView");
+            extras.putString("com.example.speedtester.data",shareddata.APlist );
+            extras.putInt("com.example.speedtester.level", levelIndex); //pass the postion to next screen
+//            extras.putIntegerArrayList("com.example.speedtester.APIndex",data.indexAPEachLevel[trueLevel]);
+            extras.putInt("com.example.speedtester.buildingIndex", buildingIndex);
+
+            showSsidActivity.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);//remove animation
+            showSsidActivity.putExtras(extras);
+            startActivity(showSsidActivity);
+            overridePendingTransition(0,0);//remove animation
+            finish();
+        }
+
         super.onResume();
     }
 
@@ -239,11 +262,12 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ssidData getData(ArrayList<Integer> deviceIDIndex, JSONArray APlist){
         ArrayList<String> ssidList = new ArrayList<>();
         ArrayList<JSONObject> lastSpeedtest = new ArrayList<>();
         ArrayList<Integer> statusList = new ArrayList<>();
-        ArrayList<Integer> runtimeList = new ArrayList<>();
+        ArrayList<String> runtimeList = new ArrayList<>();
 
         for(int i=0; i<deviceIDIndex.size();i++){
 
@@ -260,7 +284,14 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
                 ssidList.add(singleAP.getString("name"));
                 lastSpeedtest.add(singleAP.getJSONObject("last_speedtest"));
                 statusList.add(singleAP.getInt("status"));
-                runtimeList.add(singleAP.getInt("runtime"));
+
+                Date date=new Date(singleAP.getJSONObject("last_speedtest").getLong("timestamp"));
+
+                String pattern = "dd-MM-yyyy HH:mm:ss";
+                SimpleDateFormat simpleDateFormat =
+                        new SimpleDateFormat(pattern);
+//
+                runtimeList.add(simpleDateFormat.format(date));
 
             }
             catch (JSONException e) {
@@ -279,7 +310,7 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
 
     @Override
     public void onClick(int position) {
-        Intent showAPDetail = new Intent(getApplicationContext(),showApDetails.class);
+        Intent showAPDetail = new Intent(getApplicationContext(), showApDetails.class);
 
         Bundle extras = new Bundle();
 
@@ -294,7 +325,17 @@ public class ssidActivity extends AppCompatActivity implements ssidAdapter.Recyc
         ArrayList<String> ssidList;
         ArrayList<JSONObject> lastSpeedtest;
         ArrayList<Integer> statusList;
-        ArrayList<Integer> runtimeList;
+        ArrayList<String> runtimeList;
     }
 
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    public static String convertRuntime(int timestamp) {
+//        int days = Math.floorDiv(timestamp, 3600*24);
+//        timestamp -= days * (3600*24);
+//        int hours = Math.floorDiv(timestamp, 3600);
+//
+//        String convertedtime = days + " days " + hours +" hours";
+//
+//        return convertedtime;
+//    }
 }

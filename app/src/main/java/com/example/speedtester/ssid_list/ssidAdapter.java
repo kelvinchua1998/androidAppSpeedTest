@@ -1,11 +1,8 @@
-package com.example.speedtester;
+package com.example.speedtester.ssid_list;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.speedtester.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,11 +27,11 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
     ArrayList<String> ssidList;
     ArrayList<JSONObject> lastSpeedtest;
     ArrayList<Integer> statusList;
-    ArrayList<Integer> runtimeList;
+    ArrayList<String> runtimeList;
     Context context;
 
 
-    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status,ArrayList<Integer> runtime, RecyclerViewClickListener listener){
+    public ssidAdapter(Context c, ArrayList<String> ssid, ArrayList<JSONObject> Speedtest, ArrayList<Integer> status,ArrayList<String> runtime, RecyclerViewClickListener listener){
         context = c;
         ssidList = ssid;
         statusList = status;
@@ -57,7 +56,7 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         int download=0;
         int upload=0;
         int ping=0;
-        int runtime;
+        String runtime;
         try {
             download = lastSpeedtest.get(position).getInt("download");
             upload = lastSpeedtest.get(position).getInt("upload");
@@ -67,17 +66,14 @@ public class ssidAdapter extends RecyclerView.Adapter<ssidAdapter.MyViewHolder> 
         }
 
         holder.ssidTextView.setText(ssidList.get(position));
+        runtime = runtimeList.get(position);
 
-//        runtime = runtimeList.get(position);
 
-
-//        String convertedruntime = showApDetails.convertRuntime(runtime);
-
-//        holder.runtimeTextView.setText(convertedruntime);
 
         holder.downloadTextView.setText(download+" Mb/s");
         holder.uploadTextView.setText(upload+" Mb/s");
         holder.pingTextView.setText(ping+" ms");
+        holder.runtimeTextView.setText(runtime);
 
         if(statusList.get(position)==0)
             holder.colorIndicatorImageView.setImageResource(R.drawable.green_indicator);

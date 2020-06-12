@@ -1,102 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="180dp">
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:gravity="center">
 
-    <TextView
-        android:id="@+id/towerLevelName"
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:text="level x"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        >
+        <TableRow>
+            <TextView
+                android:id="@+id/towerLevelName"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+               android:paddingVertical="30dp"
+                android:text="level x"
+                android:textAlignment="viewStart"
+                android:textSize="30sp"
+                android:paddingEnd="@android:dimen/app_icon_size"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/numAPTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Total: 0"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/numAPTextView"
+                <TextView
+                    android:id="@+id/warningTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Warning: 0"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@+id/numAPTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/numAPTextView" />
+
+                <TextView
+                    android:id="@+id/criticalTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Critical: 0"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="@+id/warningTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/warningTextView" />
+
+            </LinearLayout>
+        </TableRow>
+
+    </TableLayout>
+
+
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="250dp"
-        android:layout_marginTop="20dp"
-        android:text="Total: 0"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center">
+        <TableRow>
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Download:"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/criticalTextView" />
 
-    <TextView
-        android:id="@+id/warningTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:text="Warning: 0"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/numAPTextView"
-        app:layout_constraintTop_toBottomOf="@+id/numAPTextView" />
+            <TextView
+                android:id="@+id/towerAveDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100 Mps"
+                android:paddingLeft="@android:dimen/app_icon_size"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="@+id/textView17"
+                app:layout_constraintTop_toTopOf="@+id/textView17" />
 
-    <TextView
-        android:id="@+id/criticalTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:text="Critical: 0"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/warningTextView"
-        app:layout_constraintTop_toBottomOf="@+id/warningTextView" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload:"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="@+id/textView17"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
-    <TextView
-        android:id="@+id/towerAveDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="250dp"
-        android:text="100 Mps"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/towerLevelName"
-        app:layout_constraintTop_toTopOf="@+id/textView17" />
 
-    <TextView
-        android:id="@+id/towerAveUpload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100Mps"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/towerAveDownload"
-        app:layout_constraintTop_toTopOf="@+id/textView18" />
+            <TextView
+                android:id="@+id/towerAveUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100Mps"
+                android:paddingLeft="@android:dimen/app_icon_size"
+                android:textSize="25sp"
+                app:layout_constraintStart_toStartOf="@+id/towerAveDownload"
+                app:layout_constraintTop_toTopOf="@+id/textView18" />
 
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Download:"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/towerLevelName"
-        app:layout_constraintTop_toBottomOf="@+id/criticalTextView" />
+        </TableRow>
+    </TableLayout>
 
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload:"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/textView17"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/textView17"
-        app:layout_constraintTop_toBottomOf="@+id/criticalTextView" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>

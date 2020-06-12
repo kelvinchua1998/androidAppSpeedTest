@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.example.speedtester.GlobalApplication"
+        android:name=".GlobalApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,25 +15,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activationActivity"></activity>
-        <activity android:name=".homePageActivity"></activity>
-        <activity android:name=".verifyActivity"
-            android:noHistory="true"/>
-        <activity android:name=".phoneOTPactivity"
-            android:noHistory="true"/>
-        <activity android:name=".registerActivity" />
-        <activity android:name=".loginActivity"
+        <activity android:name=".buildinglistcardview.buildinglist">
+
+        </activity>
+        <activity android:name=".login.SaveUserActivity" />
+        <activity android:name=".login.activationActivity"></activity>
+        <activity android:name=".homePageActivity" />
+        <activity
+            android:name=".login.verifyActivity"
+            android:noHistory="true" />
+        <activity
+            android:name=".login.phoneOTPactivity"
+            android:noHistory="true" />
+        <activity
+            android:name=".login.loginActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".showApDetails" />
-        <activity android:name=".ssidActivity" />
-        <activity android:name=".TowerActivity" />
-        <activity android:name=".BuildingActivity" />
+        <activity android:name=".ssid_list.ssidActivity" />
+        <activity android:name=".level_list.TowerActivity" />
+        <activity android:name=".building_list.BuildingActivity" >
+
+        </activity>
     </application>
 
 </manifest>

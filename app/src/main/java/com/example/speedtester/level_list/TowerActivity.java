@@ -1,4 +1,4 @@
-package com.example.speedtester;
+package com.example.speedtester.level_list;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.speedtester.GlobalApplication;
+import com.example.speedtester.R;
+import com.example.speedtester.ssid_list.ssidActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,10 +132,26 @@ public class TowerActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        GlobalApplication.Data apdata = GlobalApplication.getData();
-        String shareAPlist = apdata.APlist;
-        if(!data.APListStrData.equals(shareAPlist))
-            recreate();
+        GlobalApplication.Data shareddata = GlobalApplication.getData();
+
+        if(!data.APListStrData.equals(shareddata.APlist)){
+
+            Intent refreshList = new Intent(getApplicationContext(), TowerActivity.class);
+            Bundle extras = new Bundle();
+
+            extras.putInt("com.example.speedtester.buildingIndex",data.buildingIndex);
+            extras.putString("com.example.speedtester.data", shareddata.APlist);
+
+            refreshList.putExtras(extras);
+            refreshList.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
+            finish();// end the current activity
+            overridePendingTransition(0,0);
+            startActivity(refreshList);//start the activity again
+
+        }
+
+
         super.onResume();
     }
 

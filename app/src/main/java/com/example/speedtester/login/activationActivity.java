@@ -1,4 +1,4 @@
-package com.example.speedtester;
+package com.example.speedtester.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import com.example.speedtester.R;
 
 public class activationActivity extends AppCompatActivity {
 
@@ -38,7 +39,7 @@ public class activationActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent activateUser = new Intent(activationActivity.this, verifyActivity.class);
+                Intent activateUser = new Intent(activationActivity.this, loginActivity.class);
                 startActivity(activateUser);
             }
         });

@@ -1,18 +1,22 @@
-package com.example.speedtester;
+package com.example.speedtester.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.speedtester.building_list.BuildingActivity;
+import com.example.speedtester.GlobalApplication;
+import com.example.speedtester.LoadingDialogue;
+import com.example.speedtester.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,18 +41,19 @@ public class loginActivity extends AppCompatActivity {
     TextView registerTextView;
     TextView phoneNumbervalidatorTextView;
     TextView passwordvalidatorTextView;
+    Boolean phonevalidation = false;
+    Boolean passwordvalidation = false;
     String phoneNumber;
     String password;
     GlobalApplication.UserDetails user = GlobalApplication.getuserdetails();
 
     GlobalApplication.Config config = GlobalApplication.getconfiq();
+    Boolean isshowactivationpage = GlobalApplication.isShowactivationpage();
 
 
     final LoadingDialogue loadingDialogue = new LoadingDialogue(loginActivity.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -62,7 +67,8 @@ public class loginActivity extends AppCompatActivity {
                     .show();
         }
 //check whether the app for first run
-        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+        if(isshowactivationpage){
+            Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
 //if the app is run for the first time, it will go to the activation page
         if (isFirstRun) {
@@ -70,7 +76,7 @@ public class loginActivity extends AppCompatActivity {
             startActivity(new Intent(loginActivity.this, activationActivity.class));
             Toast.makeText(loginActivity.this, "Run only once", Toast.LENGTH_LONG)
                     .show();
-        }
+        }}
 
         phoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEditText);
         phoneNumbervalidatorTextView = (TextView)findViewById(R.id.phonenumbervalidatorTextView);
@@ -82,8 +88,53 @@ public class loginActivity extends AppCompatActivity {
         forgetpwTextView= (TextView) findViewById(R.id.forgetPasswordTextView);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
 
+        phoneNumberEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                phoneNumbervalidatorTextView.setText("please input a valid phone number!");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() != 8){
+                    phoneNumbervalidatorTextView.setText("please input a valid phone number!");
+                    phonevalidation = false;
+                }
+                else{
+                    phoneNumbervalidatorTextView.setText("");
+                    phonevalidation = true;
+                }
+            }
+        });
+
+        passwordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passwordvalidatorTextView.setText("please enter your password!");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() == 0){
+                    passwordvalidatorTextView.setText("please enter your password!");
+                    passwordvalidation = false;
+                }
+                else{
+                    passwordvalidatorTextView.setText("");
+                    passwordvalidation = true;
+                }
+            }
+        });
 
 
 
@@ -93,9 +144,14 @@ public class loginActivity extends AppCompatActivity {
                 phoneNumber = phoneNumberEditText.getText().toString();
                 password = passwordEditText.getText().toString();
 
-                if(validation(phoneNumber,password)){
+                if(password.equals(""))
+                    passwordvalidatorTextView.setText("please enter your password!");
+                if(phoneNumber.equals(""))
+                    phoneNumbervalidatorTextView.setText("please input a valid phone number!");
+
+                if(passwordvalidation & phonevalidation)
                     loginMobile(phoneNumber,password);
-                }
+
 
             }
         });
@@ -104,20 +160,23 @@ public class loginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent loginOTP = new Intent(loginActivity.this, phoneOTPactivity.class);
+                loginOTP.putExtra("from","loginOTP");
                 startActivity(loginOTP);
             }
         });
-//        forgetpwTextView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent forgotPW = new Intent(loginActivity.this, phoneOTPactivity.class);
-//                startActivity(loginOTP);
-//            }
-//        });
+        forgetpwTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent forgotPW = new Intent(loginActivity.this, phoneOTPactivity.class);
+                forgotPW.putExtra("from", "forgotpw");
+                startActivity(forgotPW);
+            }
+        });
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent registerNewUser = new Intent(loginActivity.this, registerActivity.class);
+                Intent registerNewUser = new Intent(loginActivity.this, phoneOTPactivity.class);
+                registerNewUser.putExtra("from","register");
                 startActivity(registerNewUser);
             }
         });
@@ -126,30 +185,30 @@ public class loginActivity extends AppCompatActivity {
 
 
     }
-    private boolean validation(String phoneNumber, String password){
-        boolean phonenumbervalidation=false, passwordvalidation=false;
-        if(phoneNumber.length() != 8){
-
-            phoneNumbervalidatorTextView.setText("please input a valid phone number!");
-            phonenumbervalidation =false;
-        }else{
-            phoneNumbervalidatorTextView.clearComposingText();
-            phonenumbervalidation =true;
-        }
-        if(password.length() == 0){
-
-            passwordvalidatorTextView.setText("please enter password");
-            passwordvalidation = false;
-        }else{
-            passwordvalidatorTextView.clearComposingText();
-            passwordvalidation =true;
-        }
-        if(phonenumbervalidation == true && passwordvalidation == true)
-            return true;
-        else{
-            return false;
-        }
-    }
+//    private boolean validation(String phoneNumber, String password){
+//        boolean phonenumbervalidation=false, passwordvalidation=false;
+//        if(phoneNumber.length() != 8){
+//
+//            phoneNumbervalidatorTextView.setText("please input a valid phone number!");
+//            phonenumbervalidation =false;
+//        }else{
+//            phoneNumbervalidatorTextView.clearComposingText();
+//            phonenumbervalidation =true;
+//        }
+//        if(password.length() == 0){
+//
+//            passwordvalidatorTextView.setText("please enter password");
+//            passwordvalidation = false;
+//        }else{
+//            passwordvalidatorTextView.clearComposingText();
+//            passwordvalidation =true;
+//        }
+//        if(phonenumbervalidation == true && passwordvalidation == true)
+//            return true;
+//        else{
+//            return false;
+//        }
+//    }
 
     private void loginMobile(final String phoneNumber, final String password){
 //start loading dialogue
